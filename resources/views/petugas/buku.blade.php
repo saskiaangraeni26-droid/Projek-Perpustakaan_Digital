@@ -18,6 +18,7 @@
     <table class="w-full text-sm text-left border">
         <thead class="bg-gray-100">
             <tr>
+                <th class="p-2">Cover</th>
                 <th class="p-2">Judul Buku</th>
                 <th class="p-2">Penulis</th>
                 <th class="p-2">Status</th>
@@ -29,8 +30,21 @@
         <tbody>
             @foreach($buku as $item)
             <tr class="border-t">
+
+                {{-- COVER --}}
+                <td class="p-2">
+                    @if($item->cover)
+                        <img src="{{ asset('storage/' . $item->cover) }}" width="80" class="rounded">
+                    @else
+                        <img src="https://via.placeholder.com/80" class="rounded">
+                    @endif
+                </td>
+
+                {{-- DATA --}}
                 <td class="p-2">{{ $item->judul_buku }}</td>
                 <td class="p-2">{{ $item->penulis }}</td>
+
+                {{-- STATUS --}}
                 <td class="p-2">
                     @if($item->stok > 0)
                         <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded">Tersedia</span>
@@ -38,7 +52,11 @@
                         <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Tidak Tersedia</span>
                     @endif
                 </td>
+
+                {{-- STOK --}}
                 <td class="p-2">{{ $item->stok }}</td>
+
+                {{-- AKSI --}}
                 <td class="p-2 flex gap-2">
 
                     {{-- Tambah Stok --}}
@@ -57,6 +75,7 @@
                     </form>
 
                 </td>
+
             </tr>
             @endforeach
         </tbody>

@@ -30,28 +30,29 @@
                 <td>{{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d F Y') }}</td>
                 <td>{{ $item->tgl_kembali ? \Carbon\Carbon::parse($item->tgl_kembali)->format('d F Y') : '-' }}</td>
                 <td>
-                    @if($item->status == 'dipinjam')
-                        <span class="bg-yellow-400 text-white px-3 py-1 rounded-full text-xs">Dipinjam</span>
-                    @else
-                        <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs">Dikembalikan</span>
-                    @endif
+    @if($item->status == 'menunggu_konfirmasi')
+        <form action="{{ route('petugas.konfirmasi.update', $item->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <button class="bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600">
+                Konfirmasi Pengembalian
+            </button>
+        </form>
+    @else
+        <span class="text-gray-500">-</span>
+    @endif
+</td>
+                <td>
+                    @php
+                        $denda = $item->denda ?? 0;
+                    @endphp
+                    <span class="text-red-500 font-semibold">Rp {{ number_format($denda) }}</span>
                 </td>
                 <td>
-                    @if($item->bayar_denda)
-                        Rp {{ number_format($item->bayar_denda->jumlah,0,',','.') }}
-                    @elseif($item->status == 'dikembalikan')
-                        <span class="text-red-600 font-semibold">Belum Bayar</span>
-                    @else
-                        <span>-</span>
-                    @endif
-                </td>
-                <td>
-                    @if($item->status == 'dipinjam')
-                    <form action="{{ route('peminjaman.kembali', $item->id) }}" method="POST" class="flex flex-col gap-2 items-center">
-                        @csrf
-                        <input type="number" name="denda" placeholder="Masukkan denda" class="border rounded px-2 py-1 w-24">
-                        <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded">Kembalikan & Bayar Denda</button>
-                    </form>
+                    @if($item->status == 'menunggu_konfirmasi')
+                        <form action="{{ route('petugas.konfirmasi.update', $item->id) }}" method="POST">
+    @csrf
+    @method('PUT')
                     @else
                         <span class="text-gray-500">-</span>
                     @endif

@@ -12,71 +12,105 @@
 
     <!-- Sidebar -->
     <div class="w-64 bg-[#c86f6f] text-white p-6">
-        <h2 class="text-xl font-semibold mb-6"> Perpustakaan</h2>
+        <h2 class="text-xl font-semibold mb-6">Perpustakaan</h2>
 
         @auth
-            @php $role = trim(auth()->user()->role); @endphp
+        @php $role = trim(auth()->user()->role); @endphp
 
-            <ul class="space-y-3">
+        <ul class="space-y-3">
 
-                <!-- Sidebar Petugas -->
-                @if($role === 'petugas')
-                    <li><a href="/dashboard" class="block hover:bg-[#a85a5a] p-2 rounded">Dashboard</a></li>
-                   <li>
-                        <a href="{{ route('buku.management') }}" class="block hover:bg-[#a85a5a] p-2 rounded">
-                            Data Buku
-                        </a>
-                    </li>
-                   <li>
-                    <a href="{{ route('data_anggota.petugas') }}" 
-                    class="block hover:bg-[#a85a5a] p-2 rounded">
+            @if($role === 'petugas')
+
+                <li><a href="/dashboard" class="block hover:bg-[#a85a5a] p-2 rounded">Dashboard</a></li>
+
+                <li>
+                    <a href="{{ route('buku.management') }}" class="block hover:bg-[#a85a5a] p-2 rounded">
+                        Data Buku
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('data_anggota.petugas') }}" class="block hover:bg-[#a85a5a] p-2 rounded">
                         Data Anggota
                     </a>
-                    </li>
-                    <a href="{{ route('petugas.peminjaman') }}" 
-                    class="block hover:bg-[#a85a5a] p-2 rounded">
+                </li>
+
+                <li>
+                    <a href="{{ route('petugas.peminjaman') }}" class="block hover:bg-[#a85a5a] p-2 rounded">
                         Data Peminjaman
                     </a>
-                    <li><a href="/management-pengembalian" class="block hover:bg-[#a85a5a] p-2 rounded">Data Pengembalian</a></li>
-                    <li><a href="/management-denda" class="block hover:bg-[#a85a5a] p-2 rounded">Data Denda</a></li>
-                    <li><a href="/laporan" class="block hover:bg-[#a85a5a] p-2 rounded">Laporan</a></li>
+                </li>
 
-                <!-- Sidebar Kepala -->
-                @elseif($role === 'kepala')
-                    <li><a href="/dashboard" class="block hover:bg-[#a85a5a] p-2 rounded">Dashboard</a></li>
-                    <li><a href="/data-peminjaman" class="block hover:bg-[#a85a5a] p-2 rounded">Data Peminjaman</a></li>
-                    <li><a href="/data-pengembalian" class="block hover:bg-[#a85a5a] p-2 rounded">Data Pengembalian</a></li>
-                    <li><a href="/data-denda" class="block hover:bg-[#a85a5a] p-2 rounded">Data Denda</a></li>
-
-                <!-- Sidebar Anggota -->
-                @elseif($role === 'anggota')
-                    <li><a href="/dashboard" class="block hover:bg-[#a85a5a] p-2 rounded">Dashboard</a></li>
-                    <li><a href="{{ route('buku.index') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Daftar Buku</a></li>
                 <li>
-                    <a href="{{ route('peminjaman.riwayat') }}"         
-                    class="block hover:bg-[#a85a5a] p-2 rounded">
-                    Peminjaman
+                    <a href="{{ route('petugas.konfirmasi') }}" class="block hover:bg-[#a85a5a] p-2 rounded">
+                        Data Pengembalian
                     </a>
                 </li>
-                @endif
 
-                <!-- Logout -->
-                <li>    
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button class="w-full text-left hover:bg-[#a85a5a] p-2 rounded">Logout</button>
-                    </form>
+                <li>
+                    <a href="/management-denda" class="block hover:bg-[#a85a5a] p-2 rounded">
+                        Data Denda
+                    </a>
                 </li>
-            </ul>
+
+                <li>
+                    <a href="/laporan" class="block hover:bg-[#a85a5a] p-2 rounded">
+                        Laporan
+                    </a>
+                </li>
+
+            @elseif($role === 'kepala')
+
+                <li><a href="/dashboard" class="block hover:bg-[#a85a5a] p-2 rounded">Dashboard</a></li>
+                <li><a href="/data-peminjaman" class="block hover:bg-[#a85a5a] p-2 rounded">Data Peminjaman</a></li>
+                <li><a href="/data-pengembalian" class="block hover:bg-[#a85a5a] p-2 rounded">Data Pengembalian</a></li>
+                <li><a href="/data-denda" class="block hover:bg-[#a85a5a] p-2 rounded">Data Denda</a></li>
+
+            @elseif($role === 'anggota')
+
+                <li><a href="/dashboard" class="block hover:bg-[#a85a5a] p-2 rounded">Dashboard</a></li>
+
+                <li>
+                    <a href="{{ route('buku.index') }}" class="block hover:bg-[#a85a5a] p-2 rounded">
+                        Daftar Buku
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('pengembalian.buku') }}" class="block hover:bg-[#a85a5a] p-2 rounded">
+                        Pengembalian
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('peminjaman.riwayat') }}" class="block hover:bg-[#a85a5a] p-2 rounded">
+                        Riyawat Data Peminjaman
+                    </a>
+                </li>
+
+            @endif
+
+            <!-- Logout -->
+            <li>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="w-full text-left hover:bg-[#a85a5a] p-2 rounded">
+                        Logout
+                    </button>
+                </form>
+            </li>
+
+        </ul>
         @endauth
-    </div>
+
+    </div> <!-- ✅ INI YANG TADI KURANG -->
 
     <!-- Content -->
     <div class="flex-1 flex flex-col">
 
         <!-- Navbar -->
         <div class="bg-white p-4 flex justify-between items-center shadow-sm">
-            <div></div> <!-- Placeholder kiri jika mau menu tambahan -->
+            <div></div>
             @auth
                 <div class="flex items-center space-x-3">
                     <div class="text-right">
@@ -91,7 +125,7 @@
             @endauth
         </div>
 
-        <!-- Konten Dashboard -->
+        <!-- Content -->
         <div class="p-6">
             @yield('content')
         </div>

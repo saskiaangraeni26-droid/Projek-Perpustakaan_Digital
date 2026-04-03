@@ -7,52 +7,48 @@ use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\AnggotaController;
 use Illuminate\Support\Facades\Route;
 
+// 🔹 HOME
 Route::get('/', function () {
     return auth()->check() ? redirect('/dashboard') : redirect('/login');
 });
 
+// 🔹 AUTH ROUTES
 Route::middleware(['auth'])->group(function () {
 
-    // 🔥 DASHBOARD
+    // DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // 🔥 PROFILE
+    // PROFILE
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // 🔥 MANAGEMENT BUKU
+    // BUKU
+    Route::resource('buku', BukuController::class)->except(['show']);
     Route::get('/management-buku', [BukuController::class, 'management'])->name('buku.management');
-
-    // 🔥 TAMBAH STOK
     Route::get('/buku/{id}/tambah-stok', [BukuController::class, 'tambahStok'])->name('buku.tambah_stok');
     Route::post('/buku/{id}/update-stok', [BukuController::class, 'updateStok'])->name('buku.updateStok');
 
-    // =====================================
-    // 🔥 ANGGOTA (PINJAM BUKU)
-    // =====================================
-
-    // konfirmasi sebelum pinjam
-    Route::get('/konfirmasi/{id}', [PinjamController::class, 'konfirmasi'])
-        ->name('anggota.konfirmasi');
-
-    // proses pinjam
+    // ================== ANGGOTA ==================
+    // Konfirmasi sebelum pinjam
+  
+    // Proses pinjam
     Route::post('/pinjam/{id}', [PinjamController::class, 'pinjam'])
         ->name('anggota.pinjam');
 
-    // riwayat
+    // Riwayat peminjaman
     Route::get('/riwayat', [PinjamController::class, 'riwayat'])
         ->name('peminjaman.riwayat');
 
-    // kembalikan buku
-    Route::post('/peminjaman/kembali/{id}', [PinjamController::class, 'kembalikan'])
-        ->name('peminjaman.kembali');
+    // Halaman pengembalian (anggota)
+    Route::get('/pengembalian', [PinjamController::class, 'pengembalian'])
+        ->name('pengembalian.buku');
 
+    // Ajukan pengembalian
+    Route::put('/pengembalian/{id}', [PinjamController::class, 'update'])
+        ->name('pengembalian.update');
 
-    // =====================================
-    // 🔥 PETUGAS (KELOLA PEMINJAMAN)
-    // =====================================
-
+    // ================== PETUGAS ==================
     Route::get('/petugas/peminjaman', [PinjamController::class, 'index'])
         ->name('petugas.peminjaman');
 
@@ -61,52 +57,40 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/petugas/peminjaman/{id}/tolak', [PinjamController::class, 'tolak'])
         ->name('petugas.tolak');
-    
-    Route::post('/peminjaman/kembali/{id}', [PinjamController::class, 'kembalikan'])
-    ->name('peminjaman.kembalikan');
 
-    Route::post('/petugas/peminjaman/{id}/kembalikan', [PinjamController::class, 'kembalikan'])
-    ->name('petugas.kembalikan');
+    // Konfirmasi pengembalian (petugas)
+    Route::get('/petugas/konfirmasi', [PinjamController::class, 'konfirmasiPengembalian'])
+        ->name('petugas.konfirmasi');
 
-    // =====================================
-    // 🔥 CRUD BUKU
-    // =====================================
+    Route::post('/petugas/konfirmasi/{id}', [PinjamController::class, 'konfirmasiKembali'])
+        ->name('petugas.konfirmasi.kembali');
 
-    Route::resource('buku', BukuController::class)->except(['show']);
+    // Form kembalikan buku (petugas)
+    Route::get('/petugas/kembalikan/{id}', [PinjamController::class, 'formKembali'])
+    ->name('petugas.form_kembali');
 
+    // Proses kembalikan buku (petugas)
+    Route::post('/petugas/kembalikan/{id}', [PinjamController::class, 'prosesKembali'])
+    ->name('petugas.proses_kembali');
 
-    // =====================================
-    // 🔥 DATA ANGGOTA
-    // =====================================
+    Route::get('/petugas/pengembalian', [PinjamController::class, 'konfirmasiPengembalian'])
+    ->name('petugas.konfirmasi');
 
-    Route::get('/data-anggota', [AnggotaController::class, 'index'])
-        ->name('data_anggota.petugas');
+    // PETUGAS - tombol konfirmasi
+    Route::put('/petugas/pengembalian/{id}', [PinjamController::class, 'konfirmasiKembali'])
+    ->name('petugas.konfirmasi.update');
 
+    // ================== DATA ANGGOTA ==================
+    Route::get('/data-anggota', [AnggotaController::class, 'index'])->name('data_anggota.petugas');
     Route::get('/tambah-anggota', [AnggotaController::class, 'create']);
     Route::post('/tambah-anggota', [AnggotaController::class, 'store']);
-
-    Route::get('/anggota/{id}/edit', [AnggotaController::class, 'edit'])
-        ->name('anggota.edit');
-
-    Route::get('/anggota/{id}', [AnggotaController::class, 'show'])
-        ->name('anggota.show');
-
-    Route::put('/anggota/{id}', [AnggotaController::class, 'update'])
-        ->name('anggota.update');
-
-    Route::delete('/anggota/{id}', [AnggotaController::class, 'destroy'])
-        ->name('anggota.destroy');
-
-    Route::get('/konfirmasi/{id}', [PinjamController::class, 'konfirmasi'])
-    ->name('anggota.konfirmasi');
-
-    Route::post('/pinjam/{id}', [PinjamController::class, 'pinjam'])
-        ->name('anggota.pinjam');
-
-    Route::get('/riwayat', [PinjamController::class, 'riwayat'])
-        ->name('peminjaman.riwayat');
-
-
+    Route::get('/anggota/{id}/edit', [AnggotaController::class, 'edit'])->name('anggota.edit');
+    Route::get('/anggota/{id}', [AnggotaController::class, 'show'])->name('anggota.show');
+    Route::put('/anggota/{id}', [AnggotaController::class, 'update'])->name('anggota.update');
+    Route::delete('/anggota/{id}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
+    Route::post('/pengembalian/{id}', [PinjamController::class, 'prosesKembali'])
+    ->name('pengembalian.proses');
+    
 });
 
 require __DIR__.'/auth.php';

@@ -67,10 +67,14 @@
 
         <!-- TOMBOL -->
         @if($item->stok > 0)
-            <a href="{{ route('anggota.konfirmasi', $item->id_buku) }}"
-   class="block text-center w-full mt-2 bg-rose-400 text-white py-1 rounded-lg hover:bg-rose-500 text-sm">
-   📚 Pinjam
-</a>
+           <form action="{{ route('anggota.pinjam', $item->id_buku) }}" method="POST">
+    @csrf
+
+    <button type="submit"
+        class="w-full mt-2 bg-rose-400 text-white py-1 rounded-lg hover:bg-rose-500 text-sm">
+        📚 Pinjam
+    </button>
+</form>
         @else
             <button class="w-full mt-2 bg-gray-300 text-gray-600 py-1 rounded-lg text-sm cursor-not-allowed">
                ❌ Habis

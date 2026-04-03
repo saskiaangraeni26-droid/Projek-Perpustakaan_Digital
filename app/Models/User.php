@@ -18,10 +18,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    'name',
+    'email',
+    'password',
+    'role', // tambahkan ini
+];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,4 +42,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // 🔥 RELASI KE PEMINJAMAN
+    public function peminjaman()
+    {
+        return $this->hasMany(\App\Models\Peminjaman::class, 'user_id', 'id');
+    }
 }

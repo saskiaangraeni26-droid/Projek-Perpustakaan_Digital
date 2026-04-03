@@ -10,14 +10,16 @@ use Carbon\Carbon;
 
 class PinjamController extends Controller
 {
-    // 🔥 HALAMAN KONFIRMASI SEBELUM PINJAM
-    public function konfirmasi($id)
+    // ================== ANGGOTA ==================
+
+    // 🔹 Konfirmasi sebelum pinjam
+    public function konfirmasiPinjam($id)
     {
         $buku = Buku::findOrFail($id);
         return view('anggota.konfirmasi', compact('buku'));
     }
 
-    // 🔥 SIMPAN PENGAJUAN (ANGGOTA)
+    // 🔹 Proses pinjam
     public function pinjam(Request $request, $id)
     {
         $buku = Buku::findOrFail($id);
@@ -29,23 +31,20 @@ class PinjamController extends Controller
         Peminjaman::create([
             'buku_id' => $buku->id_buku,
             'user_id' => Auth::id(),
-
             'nama' => Auth::user()->name,
-            'nis' => Auth::user()->email, // 🔥 pakai email
+            'nis' => Auth::user()->email,
             'telepon' => $request->telepon ?? '-',
-
             'tgl_pinjam' => Carbon::now(),
             'tgl_kembali' => Carbon::now()->addDays(7),
-
             'catatan' => $request->catatan,
-            'status' => 'menunggu' // 🔥 PENTING
+            'status' => 'menunggu'
         ]);
 
         return redirect()->route('peminjaman.riwayat')
-            ->with('success', 'Pengajuan peminjaman dikirim, tunggu konfirmasi petugas');
+            ->with('success', 'Pengajuan dikirim, tunggu konfirmasi');
     }
 
-    // 🔥 RIWAYAT ANGGOTA
+    // 🔹 Riwayat peminjaman
     public function riwayat()
     {
         $data = Peminjaman::with('buku')
@@ -56,7 +55,34 @@ class PinjamController extends Controller
         return view('anggota.denda', compact('data'));
     }
 
-    // 🔥 HALAMAN PETUGAS (LIHAT SEMUA DATA)
+    // 🔹 Halaman pengembalian anggota
+    public function pengembalian()
+    {
+        $data = Peminjaman::with('buku')
+            ->where('user_id', Auth::id())
+            ->where('status', 'dipinjam')
+            ->latest()
+            ->get();
+
+        return view('anggota.pengembalian', compact('data'));
+    }
+
+    // 🔹 Ajukan pengembalian
+    public function update($id)
+    {
+        $pinjam = Peminjaman::findOrFail($id);
+
+        if ($pinjam->status == 'dipinjam') {
+            $pinjam->status = 'menunggu_konfirmasi';
+            $pinjam->save();
+        }
+
+        return back()->with('success', 'Menunggu konfirmasi petugas');
+    }
+
+    // ================== PETUGAS ==================
+
+    // 🔹 Halaman data peminjaman
     public function index()
     {
         $data = Peminjaman::with('buku', 'user')
@@ -66,7 +92,7 @@ class PinjamController extends Controller
         return view('petugas.peminjaman', compact('data'));
     }
 
-    // 🔥 KONFIRMASI PEMINJAMAN (PETUGAS)
+    // 🔹 Setujui peminjaman
     public function setujui($id)
     {
         $pinjam = Peminjaman::with('buku')->findOrFail($id);
@@ -75,7 +101,6 @@ class PinjamController extends Controller
             return back()->with('error', 'Stok buku habis!');
         }
 
-        // kurangi stok saat disetujui
         $pinjam->buku->decrement('stok');
 
         $pinjam->update([
@@ -85,7 +110,7 @@ class PinjamController extends Controller
         return back()->with('success', 'Peminjaman disetujui');
     }
 
-    // 🔥 TOLAK PEMINJAMAN
+    // 🔹 Tolak peminjaman
     public function tolak($id)
     {
         $pinjam = Peminjaman::findOrFail($id);
@@ -97,29 +122,64 @@ class PinjamController extends Controller
         return back()->with('success', 'Peminjaman ditolak');
     }
 
-    // 🔥 ANGGOTA AJUKAN PENGEMBALIAN
-    public function kembalikan($id)
+    // 🔹 Halaman konfirmasi pengembalian petugas
+    public function konfirmasiPengembalian()
+    {
+        $data = Peminjaman::with('buku', 'user')
+            ->where('status', 'menunggu_konfirmasi')
+            ->latest()
+            ->get();
+
+        return view('petugas.konfirmasi', compact('data'));
+    }
+
+    // 🔹 Petugas konfirmasi pengembalian
+    public function konfirmasiKembali($id)
+    {
+        $pinjam = Peminjaman::with('buku')->findOrFail($id);
+
+        if ($pinjam->status != 'menunggu_konfirmasi') {
+            return back()->with('error', 'Tidak valid');
+        }
+
+        $pinjam->status = 'dikembalikan';
+        $pinjam->hitungDenda(); // pastikan function ada di model
+        $pinjam->save();
+
+        $pinjam->buku->increment('stok');
+
+        return back()->with('success', 'Pengembalian dikonfirmasi');
+    }
+
+    // 🔹 Form kembalikan buku (petugas)
+public function formKembali($id)
+{
+    $pinjam = Peminjaman::with('buku', 'user')->findOrFail($id);
+
+    return view('petugas.form_kembali', compact('pinjam'));
+}
+
+// 🔹 Proses kembalikan buku (petugas)
+public function prosesKembali(Request $request, $id)
 {
     $pinjam = Peminjaman::with('buku')->findOrFail($id);
 
-    $today = \Carbon\Carbon::now();
-    $tgl_kembali = \Carbon\Carbon::parse($pinjam->tgl_kembali);
-
-    $denda = 0;
-
-    if ($today->gt($tgl_kembali)) {
-        $telat = $today->diffInDays($tgl_kembali);
-        $denda = $telat * 1000;
+    if ($pinjam->status != 'dipinjam') {
+        return back()->with('error', 'Status tidak valid untuk dikembalikan.');
     }
 
-    // stok balik
+    $pinjam->status = 'dikembalikan';
+    $pinjam->hitungDenda(); // pastikan method ini ada di model Peminjaman
+    $pinjam->save();
+
     $pinjam->buku->increment('stok');
 
-    $pinjam->update([
-        'status' => 'dikembalikan',
-        'denda' => $denda
-    ]);
+    return redirect()->route('petugas.peminjaman')->with('success', 'Buku berhasil dikembalikan.');
+}
 
-    return back()->with('success', 'Buku dikembalikan. Denda: Rp ' . $denda);
+public function formKembaliAnggota($id)
+{
+    $pinjam = Peminjaman::with('buku')->findOrFail($id);
+    return view('anggota.form_kembali', compact('pinjam'));
 }
 }

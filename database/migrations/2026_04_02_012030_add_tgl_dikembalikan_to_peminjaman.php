@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-       Schema::table('users', function (Blueprint $table) {
-        $table->string('role')->default('anggota'); // default untuk user lama
-    });
+       Schema::table('peminjaman', function (Blueprint $table) {
+    $table->date('tgl_dikembalikan')->nullable();
+});
     }
 
     /**
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-       Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn('role');
-    });
+        Schema::table('peminjaman', function (Blueprint $table) {
+            //
+        });
     }
 };
