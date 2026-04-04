@@ -11,9 +11,28 @@
 <div class="flex min-h-screen">
 
     <!-- Sidebar -->
-    <div class="w-64 bg-[#c86f6f] text-white p-6">
-        <h2 class="text-xl font-semibold mb-6">Perpustakaan</h2>
+   <div class="w-64 bg-[#c86f6f] text-white p-6">
 
+    <!-- FOTO -->
+    <img 
+    src="{{ asset('storage/sidebar/foto.png') }}" 
+    class="h-20 mx-auto object-contain mb-4"
+>
+    <!-- JUDUL -->
+<h2 class="text-xl font-semibold mb-6 text-center">
+    <span class="text-red-400">P</span>
+    <span class="text-orange-400">e</span>
+    <span class="text-yellow-400">r</span>
+    <span class="text-green-400">p</span>
+    <span class="text-blue-400">u</span>
+    <span class="text-indigo-400">s</span>
+    <span class="text-purple-400">t</span>
+    <span class="text-pink-400">a</span>
+    <span class="text-red-400">k</span>
+    <span class="text-orange-400">a</span>
+    <span class="text-yellow-400">a</span>
+    <span class="text-green-400">n</span>
+</h2>
         @auth
         @php $role = trim(auth()->user()->role); @endphp
 
@@ -47,11 +66,6 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="/management-denda" class="block hover:bg-[#a85a5a] p-2 rounded">
-                        Data Denda
-                    </a>
-                </li>
 
                 <li>
                     <a href="/laporan" class="block hover:bg-[#a85a5a] p-2 rounded">

@@ -57,24 +57,27 @@
                 <td class="p-2">{{ $item->stok }}</td>
 
                 {{-- AKSI --}}
-                <td class="p-2 flex gap-2">
+                <td class="p-2 text-center">
+    
+    {{-- Tambah Stok --}}
+    <a href="{{ route('buku.tambah_stok', $item->id_buku) }}"
+       class="bg-blue-500 px-3 py-1 rounded text-white hover:bg-blue-600 inline-block">
+       + Stok
+    </a>
 
-                    {{-- Tambah Stok --}}
-                    <a href="{{ route('buku.tambah_stok', $item->id_buku) }}"
-                       class="bg-blue-500 px-3 py-1 rounded text-white hover:bg-blue-600">
-                       + Stok
-                    </a>
+    {{-- Hapus --}}
+    <form action="{{ route('buku.destroy', $item->id_buku) }}" 
+          method="POST" 
+          onsubmit="return confirm('Yakin ingin menghapus buku ini?');"
+          class="inline-block">
+        @csrf
+        @method('DELETE')
+        <button class="bg-red-500 px-3 py-1 rounded text-white hover:bg-red-600">
+            Hapus
+        </button>
+    </form>
 
-                    {{-- Hapus --}}
-                    <form action="{{ route('buku.destroy', $item->id_buku) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus buku ini?');">
-                        @csrf
-                        @method('DELETE')
-                        <button class="bg-red-500 px-3 py-1 rounded text-white hover:bg-red-600">
-                            Hapus
-                        </button>
-                    </form>
-
-                </td>
+</td>
 
             </tr>
             @endforeach

@@ -9,6 +9,7 @@
     <table class="w-full text-sm text-center border rounded-xl overflow-hidden">
         <thead class="bg-gray-100">
             <tr>
+                <th class="p-3">Cover</th>
                 <th class="p-3">Judul Buku</th>
                 <th class="p-3">Tanggal Pinjam</th>
                 <th class="p-3">Tanggal Kembali</th>
@@ -18,7 +19,13 @@
 
         <tbody>
             @forelse($data as $item)
-            <tr class="border-t hover:bg-gray-50">
+             <td class="p-3">
+        <img src="{{ $item->buku && $item->buku->cover 
+            ? asset('storage/' . $item->buku->cover) 
+            : 'https://via.placeholder.com/150' }}"
+            class="rounded-lg w-20 h-28 object-cover mx-auto">
+    </td>
+
 
                 <!-- Judul -->
                 <td class="p-3">

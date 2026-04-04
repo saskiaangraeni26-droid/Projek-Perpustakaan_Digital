@@ -1,4 +1,3 @@
-<!-- resources/views/anggota/editanggota.blade.php -->
 @extends('layouts.app')
 
 @section('content')

@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Peminjaman;
-use App\Models\BayarDenda;
 use Carbon\Carbon;
 
 class PeminjamanController extends Controller
@@ -17,28 +15,33 @@ class PeminjamanController extends Controller
     }
 
     // Proses pengembalian + input denda
-    public function kembaliPetugas(Request $request, $id)
-    {
-        $request->validate([
-            'denda' => 'nullable|numeric|min:0'
-        ]);
+    use Carbon\Carbon;
 
-        $peminjaman = Peminjaman::findOrFail($id);
+public function konfirmasiKembali($id)
+{
+    $pinjam = Peminjaman::with('buku')->findOrFail($id);
 
-        // Update status pengembalian
-        $peminjaman->status = 'dikembalikan';
-        $peminjaman->tgl_kembali = Carbon::now();
-        $peminjaman->save();
-
-        // Simpan denda jika ada
-        if ($request->denda) {
-            BayarDenda::updateOrCreate(
-                ['peminjaman_id' => $peminjaman->id],
-                ['jumlah' => $request->denda]
-            );
-        }
-
-        return redirect()->route('petugas.pengembalian')
-            ->with('success', 'Pengembalian berhasil & denda tercatat.');
+    if ($pinjam->status != 'menunggu_konfirmasi') {
+        return back()->with('error', 'Tidak valid');
     }
+
+    $tglKembali = Carbon::parse($pinjam->tgl_kembali); // deadline
+    $tglDikembalikan = Carbon::parse($pinjam->tgl_dikembalikan); // dari anggota
+
+    $denda = 0;
+
+    if ($tglDikembalikan->gt($tglKembali)) {
+        $telat = $tglKembali->diffInDays($tglDikembalikan);
+        $denda = $telat * 1000;
+    }
+
+    $pinjam->update([
+        'status' => 'dikembalikan',
+        'denda' => $denda
+    ]);
+
+    $pinjam->buku->increment('stok');
+
+    return back()->with('success', 'Dikonfirmasi. Denda: Rp ' . number_format($denda));
+}
 }

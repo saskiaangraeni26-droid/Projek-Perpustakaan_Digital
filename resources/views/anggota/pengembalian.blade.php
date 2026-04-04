@@ -6,33 +6,27 @@
 
 <div class="bg-white p-4 rounded-xl shadow">
 
-    <!-- Grid Buku -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
         @forelse($data as $pinjam)
         <div class="bg-gray-50 rounded-xl shadow p-3 relative">
 
-            <!-- Badge Status -->
             <div class="absolute top-2 left-2 bg-blue-500 text-white text-xs px-3 py-1 rounded-full">
                 {{ ucfirst($pinjam->status) }}
             </div>
 
-            <!-- Cover -->
             <img 
                 src="{{ optional($pinjam->buku)->cover ? asset('storage/' . $pinjam->buku->cover) : 'https://via.placeholder.com/150' }}"
                 class="rounded-lg w-full h-48 object-cover mb-3">
 
-            <!-- Judul -->
             <h2 class="font-semibold text-lg">
                 {{ optional($pinjam->buku)->judul_buku }}
             </h2>
 
-            <!-- Penulis -->
             <p class="text-gray-600 text-sm">
                 {{ optional($pinjam->buku)->penulis }}
             </p>
 
-            <!-- Tanggal Kembali -->
             <p class="text-gray-500 text-xs mb-3">
                 Kembali: 
                 {{ $pinjam->tgl_kembali 
@@ -40,14 +34,12 @@
                     : '-' }}
             </p>
 
-            <!-- Tombol Kembalikan -->
+            <!-- 🔥 FIX DISINI -->
             @if($pinjam->status == 'dipinjam')
-            <form action="{{ route('pengembalian.proses', $pinjam->id) }}" method="POST">
-                @csrf
-                <button class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600">
-                    Kembalikan
-                </button>
-            </form>
+            <a href="{{ route('anggota.form_kembali', $pinjam->id) }}"
+               class="block text-center w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600">
+                Kembalikan
+            </a>
             @else
             <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg cursor-not-allowed">
                 Sudah Dikembalikan

@@ -18,8 +18,9 @@
                 <th class="p-2">Buku</th>
                 <th class="p-2">Nama</th>
                 <th class="p-2">Tgl Pinjam</th>
-                <th class="p-2">Tgl Kembali</th>
-                <th class="p-2">Status</th>
+                <th class="p-2">Jatuh Tempo</th>
+                <th class="p-2">Dikembalikan</th>
+                <th class="p-2">Denda</th>
                 <th class="p-2">Aksi</th>
             </tr>
         </thead>
@@ -40,30 +41,47 @@
 
                 <td>{{ $item->nama }}</td>
 
+                {{-- TGL PINJAM --}}
                 <td>
                     {{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d M Y') }}
                 </td>
 
+                {{-- JATUH TEMPO (BALIKIN NORMAL) --}}
                 <td>
                     {{ $item->tgl_kembali 
                         ? \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y') 
                         : '-' }}
                 </td>
 
-                {{-- STATUS --}}
+                {{-- TGL DIKEMBALIKAN --}}
                 <td>
-                    @if($item->status == 'menunggu_konfirmasi')
-                        <span class="bg-yellow-400 text-white px-2 py-1 rounded text-xs">
-                            Menunggu
-                        </span>
-                    @elseif($item->status == 'dikembalikan')
-                        <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">
-                            Selesai
+                    {{ $item->tgl_dikembalikan 
+                        ? \Carbon\Carbon::parse($item->tgl_dikembalikan)->format('d M Y') 
+                        : '-' }}
+                </td>
+
+                {{-- DENDA (PINDAH KE SINI) --}}
+                <td>
+                    @php
+                        $jatuhTempo = \Carbon\Carbon::parse($item->tgl_kembali);
+                        $dikembalikan = $item->tgl_dikembalikan 
+                            ? \Carbon\Carbon::parse($item->tgl_dikembalikan) 
+                            : null;
+
+                        $denda = 0;
+
+                        if ($dikembalikan && $dikembalikan->gt($jatuhTempo)) {
+                            $terlambat = $jatuhTempo->diffInDays($dikembalikan);
+                            $denda = $terlambat * 1000;
+                        }
+                    @endphp
+
+                    @if($denda > 0)
+                        <span class="text-red-500 font-semibold">
+                            Rp {{ number_format($denda, 0, ',', '.') }}
                         </span>
                     @else
-                        <span class="bg-gray-400 text-white px-2 py-1 rounded text-xs">
-                            {{ $item->status }}
-                        </span>
+                        <span class="text-green-500">0</span>
                     @endif
                 </td>
 
@@ -72,7 +90,7 @@
                     @if($item->status == 'menunggu_konfirmasi')
                     <form action="{{ route('petugas.konfirmasi.kembali', $item->id) }}" method="POST">
                         @csrf
-                        @method('PUT') {{-- penting biar RESTful --}}
+                        @method('PUT')
                         <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
                             Konfirmasi
                         </button>
@@ -85,7 +103,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="7" class="p-4 text-gray-500">
+                <td colspan="8" class="p-4 text-gray-500">
                     Tidak ada data
                 </td>
             </tr>

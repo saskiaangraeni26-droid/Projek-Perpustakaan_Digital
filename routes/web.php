@@ -48,6 +48,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/pengembalian/{id}', [PinjamController::class, 'update'])
         ->name('pengembalian.update');
 
+    Route::get('/anggota/kembali/{id}', [PinjamController::class, 'formKembaliAnggota'])
+    ->name('anggota.form_kembali');
+
     // ================== PETUGAS ==================
     Route::get('/petugas/peminjaman', [PinjamController::class, 'index'])
         ->name('petugas.peminjaman');
@@ -62,7 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/petugas/konfirmasi', [PinjamController::class, 'konfirmasiPengembalian'])
         ->name('petugas.konfirmasi');
 
-    Route::post('/petugas/konfirmasi/{id}', [PinjamController::class, 'konfirmasiKembali'])
+    Route::put('/petugas/konfirmasi/{id}', [PinjamController::class, 'konfirmasiKembali'])
         ->name('petugas.konfirmasi.kembali');
 
     // Form kembalikan buku (petugas)
