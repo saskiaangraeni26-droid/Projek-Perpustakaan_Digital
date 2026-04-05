@@ -35,7 +35,6 @@
                 <th class="p-2 border">Jatuh Tempo</th>
                 <th class="p-2 border">Dikembalikan</th>
                 <th class="p-2 border">Denda</th>
-                <th class="p-2 border">Aksi</th>
             </tr>
         </thead>
 
@@ -98,28 +97,11 @@
                     @endif
                 </td>
 
-                {{-- AKSI --}}
-                <td class="border">
-                    @if($item->status == 'menunggu_konfirmasi')
-                    <form action="{{ route('petugas.konfirmasi.kembali', $item->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
-                            Konfirmasi
-                        </button>
-                    </form>
-                    @else
-                        <span class="text-gray-400">-</span>
-                    @endif
-                </td>
+        
 
             </tr>
         @empty
-            <tr>
-                <td colspan="8" class="p-4 text-gray-500">
-                    Data tidak ditemukan
-                </td>
-            </tr>
+           
         @endforelse
         </tbody>
     </table>

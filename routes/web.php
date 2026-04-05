@@ -12,76 +12,70 @@ Route::get('/', function () {
     return auth()->check() ? redirect('/dashboard') : redirect('/login');
 });
 
-// 🔹 AUTH ROUTES
+// 🔹 AUTH
 Route::middleware(['auth'])->group(function () {
 
-    // DASHBOARD
+    // ================== DASHBOARD ==================
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // PROFILE
+    // ================== PROFILE ==================
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // BUKU
+    // ================== BUKU ==================
     Route::resource('buku', BukuController::class)->except(['show']);
     Route::get('/management-buku', [BukuController::class, 'management'])->name('buku.management');
     Route::get('/buku/{id}/tambah-stok', [BukuController::class, 'tambahStok'])->name('buku.tambah_stok');
     Route::post('/buku/{id}/update-stok', [BukuController::class, 'updateStok'])->name('buku.updateStok');
 
     // ================== ANGGOTA ==================
-    // Konfirmasi sebelum pinjam
-  
-    // Proses pinjam
+
+    // 🔹 Pinjam buku
     Route::post('/pinjam/{id}', [PinjamController::class, 'pinjam'])
         ->name('anggota.pinjam');
 
-    // Riwayat peminjaman
+    // 🔹 Riwayat (HANYA yang sudah selesai)
     Route::get('/riwayat', [PinjamController::class, 'riwayat'])
         ->name('peminjaman.riwayat');
 
-    // Halaman pengembalian (anggota)
+    // 🔹 Halaman pengembalian
     Route::get('/pengembalian', [PinjamController::class, 'pengembalian'])
         ->name('pengembalian.buku');
 
-    // Ajukan pengembalian
+    // 🔹 Form isi tanggal pengembalian
+    Route::get('/anggota/kembali/{id}', [PinjamController::class, 'formKembaliAnggota'])
+        ->name('anggota.form_kembali');
+
+    // 🔹 Ajukan pengembalian
     Route::put('/pengembalian/{id}', [PinjamController::class, 'update'])
         ->name('pengembalian.update');
 
-    Route::get('/anggota/kembali/{id}', [PinjamController::class, 'formKembaliAnggota'])
-    ->name('anggota.form_kembali');
+    Route::get('/peminjaman', [PinjamController::class, 'peminjamanAktif'])
+    ->name('peminjaman.aktif');
+
 
     // ================== PETUGAS ==================
+
+    // 🔹 Data peminjaman (menunggu + dipinjam)
     Route::get('/petugas/peminjaman', [PinjamController::class, 'index'])
         ->name('petugas.peminjaman');
 
+    // 🔹 Setujui pinjam
     Route::post('/petugas/peminjaman/{id}/setujui', [PinjamController::class, 'setujui'])
         ->name('petugas.setujui');
 
+    // 🔹 Tolak pinjam
     Route::post('/petugas/peminjaman/{id}/tolak', [PinjamController::class, 'tolak'])
         ->name('petugas.tolak');
 
-    // Konfirmasi pengembalian (petugas)
+    // 🔹 Konfirmasi pengembalian + denda
     Route::get('/petugas/konfirmasi', [PinjamController::class, 'konfirmasiPengembalian'])
         ->name('petugas.konfirmasi');
 
     Route::put('/petugas/konfirmasi/{id}', [PinjamController::class, 'konfirmasiKembali'])
         ->name('petugas.konfirmasi.kembali');
 
-    // Form kembalikan buku (petugas)
-    Route::get('/petugas/kembalikan/{id}', [PinjamController::class, 'formKembali'])
-    ->name('petugas.form_kembali');
-
-    // Proses kembalikan buku (petugas)
-    Route::post('/petugas/kembalikan/{id}', [PinjamController::class, 'prosesKembali'])
-    ->name('petugas.proses_kembali');
-
-    Route::get('/petugas/pengembalian', [PinjamController::class, 'konfirmasiPengembalian'])
-    ->name('petugas.konfirmasi');
-
-    // PETUGAS - tombol konfirmasi
-    Route::put('/petugas/pengembalian/{id}', [PinjamController::class, 'konfirmasiKembali'])
-    ->name('petugas.konfirmasi.update');
 
     // ================== DATA ANGGOTA ==================
     Route::get('/data-anggota', [AnggotaController::class, 'index'])->name('data_anggota.petugas');
@@ -91,9 +85,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/anggota/{id}', [AnggotaController::class, 'show'])->name('anggota.show');
     Route::put('/anggota/{id}', [AnggotaController::class, 'update'])->name('anggota.update');
     Route::delete('/anggota/{id}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
-    Route::post('/pengembalian/{id}', [PinjamController::class, 'prosesKembali'])
-    ->name('pengembalian.proses');
-    
+
+
+
+    // ================== kepala ==================
+   Route::get('/laporan-kepala', [PinjamController::class, 'laporanKepala'])
+    ->name('kepala.laporan');
 });
 
 require __DIR__.'/auth.php';

@@ -23,7 +23,7 @@
                 <th class="p-2">Penulis</th>
                 <th class="p-2">Status</th>
                 <th class="p-2">Stok</th>
-                <th class="p-2">Aksi</th>
+                <th class="p-2 text-center">Aksi</th>
             </tr>
         </thead>
 
@@ -57,27 +57,28 @@
                 <td class="p-2">{{ $item->stok }}</td>
 
                 {{-- AKSI --}}
-                <td class="p-2 text-center">
-    
-    {{-- Tambah Stok --}}
-    <a href="{{ route('buku.tambah_stok', $item->id_buku) }}"
-       class="bg-blue-500 px-3 py-1 rounded text-white hover:bg-blue-600 inline-block">
-       + Stok
-    </a>
+                <td class="p-2">
+                    <div class="flex justify-center gap-2">
 
-    {{-- Hapus --}}
-    <form action="{{ route('buku.destroy', $item->id_buku) }}" 
-          method="POST" 
-          onsubmit="return confirm('Yakin ingin menghapus buku ini?');"
-          class="inline-block">
-        @csrf
-        @method('DELETE')
-        <button class="bg-red-500 px-3 py-1 rounded text-white hover:bg-red-600">
-            Hapus
-        </button>
-    </form>
+                        {{-- Edit --}}
+                        <a href="{{ route('buku.edit', $item->id_buku) }}"
+                           class="bg-yellow-500 px-3 py-1 rounded text-white hover:bg-yellow-600 text-sm">
+                           ✏️ Edit
+                        </a>
 
-</td>
+                        {{-- Hapus --}}
+                        <form action="{{ route('buku.destroy', $item->id_buku) }}" 
+                              method="POST" 
+                              onsubmit="return confirm('Yakin ingin menghapus buku ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button class="bg-red-500 px-3 py-1 rounded text-white hover:bg-red-600 text-sm">
+                                Hapus
+                            </button>
+                        </form>
+
+                    </div>
+                </td>
 
             </tr>
             @endforeach

@@ -52,7 +52,7 @@ class BukuController extends Controller
     public function edit($id)
     {
         $buku = Buku::findOrFail($id);
-        return view('buku.edit', compact('buku'));
+        return view('petugas.edit_buku', compact('buku'));
     }
 
     // ================= UPDATE =================
