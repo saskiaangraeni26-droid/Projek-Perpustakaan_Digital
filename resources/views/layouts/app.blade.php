@@ -61,8 +61,18 @@
             @elseif($role === 'kepala')
 
                 <li><a href="/dashboard" class="block hover:bg-[#a85a5a] p-2 rounded">Dashboard</a></li>
-                <li><a href="/data-peminjaman" class="block hover:bg-[#a85a5a] p-2 rounded">Data Peminjaman</a></li>
-                <li><a href="/data-pengembalian" class="block hover:bg-[#a85a5a] p-2 rounded">Data Pengembalian</a></li>
+               <a href="{{ route('kepala.buku') }}" 
+            class="block hover:bg-[#a85a5a] p-2 rounded">
+              Data Buku
+            </a>
+                <a href="{{ route('kepala.anggota') }}" 
+            class="block hover:bg-[#a85a5a] p-2 rounded">
+                Data Anggota
+            </a>
+                <a href="{{ route('kepala.petugas') }}" 
+            class="block hover:bg-[#a85a5a] p-2 rounded">
+                Data Petugas
+            </a>
                <li>
             <a href="{{ route('kepala.laporan') }}" 
             class="block hover:bg-[#a85a5a] p-2 rounded">

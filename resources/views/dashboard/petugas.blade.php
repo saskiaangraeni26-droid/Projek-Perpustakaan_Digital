@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="mb-4">
-    <h1 class="text-2xl font-semibold">Dashboard Petugas</h1>
+    <h1 class="text-2xl font-semibold">Dashboard</h1>
     <h3 class="text-gray-600 text-sm">Hallo, Selamat Datang</h3>
 </div>
 

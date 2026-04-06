@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\KepalaController;
 use Illuminate\Support\Facades\Route;
 
 // 🔹 HOME
@@ -91,6 +92,23 @@ Route::middleware(['auth'])->group(function () {
     // ================== kepala ==================
    Route::get('/laporan-kepala', [PinjamController::class, 'laporanKepala'])
     ->name('kepala.laporan');
+
+    Route::get('/kepala/buku', [BukuController::class, 'kepalaIndex'])->name('kepala.buku');
+
+    Route::get('/kepala/petugas', [BukuController::class, 'kepalaIndex'])->name('kepala.petugas');
+
+    Route::middleware(['auth'])->group(function () {
+
+    Route::get('/kepala/petugas', [KepalaController::class, 'petugas'])
+        ->name('kepala.petugas');
+
+    });
+
+    Route::get('/kepala/anggota', [KepalaController::class, 'dataAnggota'])
+    ->name('kepala.anggota');
+
+    Route::get('/kepala/user/{role}', [KepalaController::class, 'dataUser']);
+
 });
 
 require __DIR__.'/auth.php';

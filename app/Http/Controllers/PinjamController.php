@@ -45,15 +45,15 @@ class PinjamController extends Controller
 
     // 🔹 DATA PEMINJAMAN AKTIF ANGGOTA
     public function peminjamanAktif()
-    {
-        $data = Peminjaman::with('buku')
-            ->where('user_id', Auth::id())
-            ->whereIn('status', ['menunggu', 'dipinjam'])
-            ->latest()
-            ->get();
+{
+    $data = Peminjaman::with('buku')
+        ->where('user_id', Auth::id())
+        ->whereIn('status', ['menunggu', 'dipinjam', 'menunggu_konfirmasi', 'dikembalikan'])
+        ->latest()
+        ->get();
 
-        return view('anggota.peminjaman', compact('data'));
-    }
+    return view('anggota.peminjaman', compact('data'));
+}
 
     // 🔹 RIWAYAT (SELESAI)
     public function riwayat()
@@ -69,15 +69,15 @@ class PinjamController extends Controller
 
     // 🔹 HALAMAN PENGEMBALIAN
     public function pengembalian()
-    {
-        $data = Peminjaman::with('buku')
-            ->where('user_id', Auth::id())
-            ->where('status', 'dipinjam')
-            ->latest()
-            ->get();
+{
+    $data = Peminjaman::with('buku')
+        ->where('user_id', Auth::id())
+        ->whereIn('status', ['dipinjam', 'menunggu_konfirmasi', 'dikembalikan'])
+        ->latest()
+        ->get();
 
-        return view('anggota.pengembalian', compact('data'));
-    }
+    return view('anggota.pengembalian', compact('data'));
+}
 
     // 🔹 FORM INPUT TGL DIKEMBALIKAN
     public function formKembaliAnggota($id)
@@ -108,15 +108,15 @@ class PinjamController extends Controller
     // ================== PETUGAS ==================
 
     // 🔹 DATA PEMINJAMAN PETUGAS
-    public function index()
-    {
-        $data = Peminjaman::with('buku', 'user')
-            ->whereIn('status', ['menunggu', 'dipinjam'])
-            ->latest()
-            ->get();
+   public function index()
+{
+    $data = Peminjaman::with('buku', 'user')
+        ->whereIn('status', ['menunggu', 'dipinjam', 'menunggu_konfirmasi', 'dikembalikan'])
+        ->latest()
+        ->get();
 
-        return view('petugas.peminjaman', compact('data'));
-    }
+    return view('petugas.peminjaman', compact('data'));
+}
 
     // 🔹 SETUJUI PEMINJAMAN
     public function setujui($id)
@@ -138,21 +138,21 @@ class PinjamController extends Controller
 
     // 🔹 KONFIRMASI PENGEMBALIAN (HALAMAN)
     public function konfirmasiPengembalian(Request $request)
-    {
-        $query = Peminjaman::with('buku', 'user')
-            ->where('status', 'menunggu_konfirmasi');
+{
+    $query = Peminjaman::with('buku', 'user')
+        ->whereIn('status', ['menunggu_konfirmasi', 'dikembalikan']);
 
-        if ($request->search) {
-            $query->where(function ($q) use ($request) {
-                $q->where('nama', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
-            });
-        }
-
-        $data = $query->latest()->get();
-
-        return view('petugas.konfirmasi', compact('data'));
+    if ($request->search) {
+        $query->where(function ($q) use ($request) {
+            $q->where('nama', 'like', '%' . $request->search . '%')
+              ->orWhere('email', 'like', '%' . $request->search . '%');
+        });
     }
+
+    $data = $query->latest()->get();
+
+    return view('petugas.konfirmasi', compact('data'));
+}
 
     // 🔹 KONFIRMASI PENGEMBALIAN + HITUNG DENDA
     public function konfirmasiKembali($id)
@@ -218,4 +218,6 @@ class PinjamController extends Controller
 
         return view('kepala.laporan', compact('data'));
     }
+
+    
 }

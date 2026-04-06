@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="text-2xl font-semibold mb-4">Dashboard Kepala</h1>
+<h1 class="text-2xl font-semibold mb-4">Dashboard</h1>
 
 <div class="grid grid-cols-3 gap-4 mb-6">
     <div class="bg-white p-4 rounded-xl shadow flex items-center space-x-3">

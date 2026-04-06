@@ -72,4 +72,6 @@ public function update(Request $request, $id)
     // Redirect dengan pesan sukses
     return redirect()->route('data_anggota.petugas')->with('success', 'Data anggota berhasil diperbarui!');
 }
+
+
 }

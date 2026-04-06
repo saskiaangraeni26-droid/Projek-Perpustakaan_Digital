@@ -38,21 +38,24 @@
                     {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y') }}
                 </td>
 
-                <td>
-                    @if($item->status == 'menunggu')
-                        <span class="bg-blue-400 text-white px-2 py-1 rounded text-xs">
-                            Menunggu
-                        </span>
-                    @elseif($item->status == 'dipinjam')
-                        <span class="bg-yellow-400 text-white px-2 py-1 rounded text-xs">
-                            Dipinjam
-                        </span>
-                    @elseif($item->status == 'menunggu_konfirmasi')
-                        <span class="bg-purple-400 text-white px-2 py-1 rounded text-xs">
-                            Menunggu Konfirmasi
-                        </span>
-                    @endif
-                </td>
+                <td> @if($item->status == 'menunggu')
+                <span class="bg-blue-400 text-white px-2 py-1 rounded text-xs">
+                    Menunggu
+                </span>
+            @elseif($item->status == 'dipinjam')
+                <span class="bg-yellow-400 text-white px-2 py-1 rounded text-xs">
+                    Dipinjam
+                </span>
+            @elseif($item->status == 'menunggu_konfirmasi')
+                <span class="bg-purple-400 text-white px-2 py-1 rounded text-xs">
+                    Menunggu Konfirmasi
+                </span>
+            @else
+                <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">
+                    Selesai
+                </span>
+            @endif
+        </td>
 
             </tr>
         @empty

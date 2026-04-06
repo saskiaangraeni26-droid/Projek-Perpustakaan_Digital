@@ -21,6 +21,7 @@
                 <th class="p-2">Cover</th>
                 <th class="p-2">Judul Buku</th>
                 <th class="p-2">Penulis</th>
+                <th class="p-2">Tahun Terbit</th> {{-- 🔥 tambahan --}}
                 <th class="p-2">Status</th>
                 <th class="p-2">Stok</th>
                 <th class="p-2 text-center">Aksi</th>
@@ -28,7 +29,7 @@
         </thead>
 
         <tbody>
-            @foreach($buku as $item)
+            @forelse($buku as $item)
             <tr class="border-t">
 
                 {{-- COVER --}}
@@ -44,12 +45,21 @@
                 <td class="p-2">{{ $item->judul_buku }}</td>
                 <td class="p-2">{{ $item->penulis }}</td>
 
+                {{-- 🔥 TAHUN TERBIT --}}
+                <td class="p-2">
+                    {{ $item->tahun_terbit ?? '-' }}
+                </td>
+
                 {{-- STATUS --}}
                 <td class="p-2">
                     @if($item->stok > 0)
-                        <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded">Tersedia</span>
+                        <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded">
+                            Tersedia
+                        </span>
                     @else
-                        <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Tidak Tersedia</span>
+                        <span class="bg-red-200 text-red-800 px-2 py-1 rounded">
+                            Tidak Tersedia
+                        </span>
                     @endif
                 </td>
 
@@ -60,13 +70,13 @@
                 <td class="p-2">
                     <div class="flex justify-center gap-2">
 
-                        {{-- Edit --}}
+                        {{-- EDIT --}}
                         <a href="{{ route('buku.edit', $item->id_buku) }}"
                            class="bg-yellow-500 px-3 py-1 rounded text-white hover:bg-yellow-600 text-sm">
                            ✏️ Edit
                         </a>
 
-                        {{-- Hapus --}}
+                        {{-- HAPUS --}}
                         <form action="{{ route('buku.destroy', $item->id_buku) }}" 
                               method="POST" 
                               onsubmit="return confirm('Yakin ingin menghapus buku ini?');">
@@ -81,7 +91,13 @@
                 </td>
 
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="7" class="text-center p-4 text-gray-500">
+                    Data buku belum tersedia
+                </td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 

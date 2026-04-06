@@ -2,58 +2,109 @@
 
 @section('content')
 
-<h1 class="text-2xl font-semibold mb-4">Pengembalian Buku</h1>
+<h1 class="text-2xl font-semibold mb-6">Pengembalian Buku</h1>
 
-<div class="bg-white p-4 rounded-xl shadow">
+<div class="bg-white p-6 rounded-xl shadow">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <table class="w-full text-sm text-center border border-gray-200 rounded-lg overflow-hidden">
+        
+        {{-- HEADER --}}
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-3">Cover</th>
+                <th class="p-3">Judul Buku</th>
+                <th class="p-3">Penulis</th>
+                <th class="p-3">Jatuh Tempo</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Aksi</th>
+            </tr>
+        </thead>
 
+        {{-- BODY --}}
+        <tbody>
         @forelse($data as $pinjam)
-        <div class="bg-gray-50 rounded-xl shadow p-3 relative">
 
-            <div class="absolute top-2 left-2 bg-blue-500 text-white text-xs px-3 py-1 rounded-full">
-                {{ ucfirst($pinjam->status) }}
-            </div>
+            <tr class="border-t hover:bg-gray-50">
 
-            <img 
-                src="{{ optional($pinjam->buku)->cover ? asset('storage/' . $pinjam->buku->cover) : 'https://via.placeholder.com/150' }}"
-                class="rounded-lg w-full h-48 object-cover mb-3">
+                {{-- COVER --}}
+                <td class="p-3">
+                    <img 
+                        src="{{ optional($pinjam->buku)->cover ? asset('storage/' . $pinjam->buku->cover) : 'https://via.placeholder.com/80' }}"
+                        class="w-14 h-20 object-cover rounded mx-auto">
+                </td>
 
-            <h2 class="font-semibold text-lg">
-                {{ optional($pinjam->buku)->judul_buku }}
-            </h2>
+                {{-- JUDUL --}}
+                <td class="p-3 font-medium">
+                    {{ optional($pinjam->buku)->judul_buku ?? '-' }}
+                </td>
 
-            <p class="text-gray-600 text-sm">
-                {{ optional($pinjam->buku)->penulis }}
-            </p>
+                {{-- PENULIS --}}
+                <td class="p-3 text-gray-600">
+                    {{ optional($pinjam->buku)->penulis ?? '-' }}
+                </td>
 
-            <p class="text-gray-500 text-xs mb-3">
-                Kembali: 
-                {{ $pinjam->tgl_kembali 
-                    ? \Carbon\Carbon::parse($pinjam->tgl_kembali)->format('d M Y') 
-                    : '-' }}
-            </p>
+                {{-- JATUH TEMPO --}}
+                <td class="p-3">
+                    {{ $pinjam->tgl_kembali 
+                        ? \Carbon\Carbon::parse($pinjam->tgl_kembali)->format('d M Y') 
+                        : '-' }}
+                </td>
 
-            <!-- 🔥 FIX DISINI -->
-            @if($pinjam->status == 'dipinjam')
-            <a href="{{ route('anggota.form_kembali', $pinjam->id) }}"
-               class="block text-center w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600">
-                Kembalikan
-            </a>
-            @else
-            <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg cursor-not-allowed">
-                Sudah Dikembalikan
-            </button>
-            @endif
+                {{-- STATUS --}}
+                <td class="p-3">
+                    @if($pinjam->status == 'dipinjam')
+                        <span class="bg-yellow-400 text-white px-3 py-1 rounded-full text-xs">
+                            Dipinjam
+                        </span>
 
-        </div>
+                    @elseif($pinjam->status == 'menunggu_konfirmasi')
+                        <span class="bg-purple-400 text-white px-3 py-1 rounded-full text-xs">
+                            Menunggu Konfirmasi
+                        </span>
+
+                    @else
+                        <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs">
+                            Selesai
+                        </span>
+                    @endif
+                </td>
+
+                {{-- AKSI --}}
+                <td class="p-3">
+                    @if($pinjam->status == 'dipinjam')
+
+                        <a href="{{ route('anggota.form_kembali', $pinjam->id) }}"
+                           class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-xs">
+                            Kembalikan
+                        </a>
+
+                    @elseif($pinjam->status == 'menunggu_konfirmasi')
+
+                        <span class="text-purple-500 text-xs font-semibold">
+                            Menunggu
+                        </span>
+
+                    @else
+
+                        <span class="text-green-500 text-xs font-semibold">
+                            ✔ Selesai
+                        </span>
+
+                    @endif
+                </td>
+
+            </tr>
+
         @empty
-        <div class="col-span-4 text-center text-gray-500">
-            Tidak ada buku yang harus dikembalikan.
-        </div>
+            <tr>
+                <td colspan="6" class="p-6 text-gray-500">
+                    Tidak ada buku yang harus dikembalikan
+                </td>
+            </tr>
         @endforelse
+        </tbody>
 
-    </div>
+    </table>
 
 </div>
 

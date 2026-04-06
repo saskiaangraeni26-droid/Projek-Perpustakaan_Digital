@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="text-2xl font-semibold mb-6">Konfirmasi Pengembalian dan Denda</h1>
+<h1 class="text-2xl font-semibold mb-6">Laporan Peminjaman</h1>
 
 @if(session('success'))
 <div class="bg-green-200 text-green-800 p-3 rounded mb-4">
@@ -10,30 +10,15 @@
 @endif
 
 <div class="bg-white p-6 rounded-xl shadow">
-
-    {{-- 🔍 SEARCH --}}
-    <form method="GET" class="mb-4 flex gap-2">
-        <input 
-            type="text" 
-            name="search" 
-            value="{{ request('search') }}"
-            placeholder="Cari nama atau email..."
-            class="border p-2 rounded w-64">
-
-        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Cari
-        </button>
-    </form>
-
     <table class="w-full text-sm text-center border border-gray-300">
         <thead class="bg-gray-100">
             <tr>
                 <th class="p-2 border">Cover</th>
-                <th class="p-2 border">Buku</th>
+                <th class="p-2 border">Judul Buku</th>
                 <th class="p-2 border">Nama</th>
-                <th class="p-2 border">Tgl Pinjam</th>
+                <th class="p-2 border">Tanggal Pinjam</th>
                 <th class="p-2 border">Jatuh Tempo</th>
-                <th class="p-2 border">Dikembalikan</th>
+                <th class="p-2 border"> Tanggal Dikembalikan</th>
                 <th class="p-2 border">Denda</th>
             </tr>
         </thead>

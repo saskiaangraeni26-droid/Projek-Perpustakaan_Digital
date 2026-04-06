@@ -126,4 +126,10 @@ class BukuController extends Controller
 
         return redirect()->route('buku.index');
     }
+
+    public function kepalaIndex()
+{
+    $buku = Buku::all();
+    return view('kepala.buku', compact('buku'));
+}
 }
