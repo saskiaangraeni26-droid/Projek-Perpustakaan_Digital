@@ -28,7 +28,6 @@
                 <th class="p-2">Jatuh Tempo</th>
                 <th class="p-2">Dikembalikan</th>
                 <th class="p-2">Denda</th>
-                <th class="p-2">Status</th>
                 <th class="p-2">Aksi</th>
             </tr>
         </thead>
@@ -80,19 +79,6 @@
                     @endif
                 </td>
 
-                {{-- STATUS --}}
-                <td>
-                    @if($item->status == 'menunggu_konfirmasi')
-                        <span class="bg-yellow-500 text-white px-2 py-1 rounded text-xs">
-                            Menunggu
-                        </span>
-                    @else
-                        <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">
-                            Selesai
-                        </span>
-                    @endif
-                </td>
-
                 {{-- AKSI --}}
                 <td>
                     @if($item->status == 'menunggu_konfirmasi')
@@ -119,6 +105,10 @@
         @endforelse
         </tbody>
     </table>
+
+    <div class="mt-4">
+    {{ $data->links() }}
+</div>
 
 </div>
 @endsection

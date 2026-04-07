@@ -2,67 +2,105 @@
 
 @section('content')
 
-<h1 class="text-2xl font-semibold mb-4">Data Anggota</h1>
+<div class="mb-6">
+    <h1 class="text-2xl font-semibold">Data Anggota</h1>
+    <p class="text-gray-500 text-sm">Daftar semua anggota perpustakaan</p>
+</div>
 
-<div class="bg-white p-4 rounded-xl shadow">
+<div class="bg-white p-6 rounded-xl shadow">
 
-    <!-- Tombol Tambah -->
-    <div class="flex justify-end mb-4">
+    <!-- 🔍 SEARCH + BUTTON -->
+    <div class="flex justify-between items-center mb-4">
+        
+        <form method="GET" class="flex gap-2">
+            <input 
+                type="text" 
+                name="search"
+                placeholder="Cari nama / email..."
+                class="border px-3 py-2 rounded w-64"
+                value="{{ request('search') }}"
+            >
+            <button class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Cari
+            </button>
+        </form>
+
         <a href="{{ url('/tambah-anggota') }}"
            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
            + Tambah Anggota
         </a>
+
     </div>
 
-    <!-- Table -->
-    <table class="w-full text-sm text-left border">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2">Nama</th>
-                <th class="p-2">Email</th>
-                <th class="p-2">Status</th>
-                <th class="p-2">Aksi</th>
-            </tr>
-        </thead>
+    <!-- 📊 INFO -->
+    <div class="mb-3 text-sm text-gray-500">
+        Total Anggota: <span class="font-semibold text-black">{{ $anggota->count() }}</span>
+    </div>
 
-        <tbody>
-            @foreach($anggota as $a)
-            <tr class="border-t">
-                <td class="p-2">{{ $a->nama }}</td>
-                <td class="p-2">{{ $a->email }}</td>
+    <!-- 📋 TABLE -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-center border border-gray-200 rounded-lg overflow-hidden">
+            
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3">No</th>
+                    <th class="p-3">Nama</th>
+                    <th class="p-3">Email</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3">Aksi</th>
+                </tr>
+            </thead>
 
-                <td class="p-2">
-                    @if($a->status == 1)
-                        <span class="bg-green-200 text-green-800 px-2 py-1 rounded">
+            <tbody>
+                @forelse($anggota as $item)
+                <tr class="border-t hover:bg-gray-50">
+                    <td class="p-3">{{ $loop->iteration }}</td>
+
+                    <td class="p-3 font-medium">
+                        {{ $item->name }}
+                    </td>
+
+                    <td class="p-3 text-gray-600">
+                        {{ $item->email }}
+                    </td>
+
+                    <td class="p-3">
+                        <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
                             Aktif
                         </span>
-                    @else
-                        <span class="bg-red-200 text-red-800 px-2 py-1 rounded">
-                            Tidak Aktif
-                        </span>
-                    @endif
-                </td>
+                    </td>
 
-                <td class="p-2 flex gap-2">
-    <a href="{{ route('anggota.edit', $a->id) }}" 
-       class="bg-purple-500 px-3 py-1 rounded text-white">
-       Edit
-    </a>
-    <form action="{{ route('anggota.destroy', $a->id) }}" method="POST">
-        @csrf
-        @method('DELETE')
-        <button type="submit" 
-                class="bg-red-500 px-3 py-1 rounded text-white"
-                onclick="return confirm('Yakin ingin menghapus anggota ini?')">
-            Hapus
-        </button>
-    </form>
-</td>
-</form>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+                    <td class="p-3 flex justify-center gap-2">
+
+                        <a href="{{ route('anggota.edit', $item->id) }}"
+                           class="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 text-xs">
+                           Edit
+                        </a>
+
+                        <form action="{{ route('anggota.destroy', $item->id) }}" method="POST"
+                              onsubmit="return confirm('Yakin mau hapus?')">
+                            @csrf
+                            @method('DELETE')
+
+                            <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs">
+                                Hapus
+                            </button>
+                        </form>
+
+                    </td>
+                </tr>
+
+                @empty
+                <tr>
+                    <td colspan="5" class="p-4 text-gray-500">
+                        Tidak ada data anggota 😢
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+
+        </table>
+    </div>
 
 </div>
 

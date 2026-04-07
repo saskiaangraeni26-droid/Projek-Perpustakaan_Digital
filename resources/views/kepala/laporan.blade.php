@@ -81,12 +81,8 @@
                         <span class="text-green-500">0</span>
                     @endif
                 </td>
-
-        
-
             </tr>
-        @empty
-           
+        @empty 
         @endforelse
         </tbody>
     </table>

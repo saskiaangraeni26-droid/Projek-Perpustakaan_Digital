@@ -23,6 +23,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
     // ================== BUKU ==================
     Route::resource('buku', BukuController::class)->except(['show']);
@@ -55,6 +57,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/peminjaman', [PinjamController::class, 'peminjamanAktif'])
     ->name('peminjaman.aktif');
 
+    Route::get('/preview-kembali/{id}', [PinjamController::class, 'previewKembali'])
+    ->name('anggota.preview_kembali');
+
 
     // ================== PETUGAS ==================
 
@@ -76,6 +81,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::put('/petugas/konfirmasi/{id}', [PinjamController::class, 'konfirmasiKembali'])
         ->name('petugas.konfirmasi.kembali');
+
 
 
     // ================== DATA ANGGOTA ==================
@@ -106,8 +112,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/kepala/anggota', [KepalaController::class, 'dataAnggota'])
     ->name('kepala.anggota');
-
-    Route::get('/kepala/user/{role}', [KepalaController::class, 'dataUser']);
+    
 
 });
 

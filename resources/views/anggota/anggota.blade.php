@@ -2,12 +2,13 @@
 
 @section('content')
 
+<h1 class="text-2xl font-semibold mb-6">Data Buku</h1>
 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
 
 @forelse($buku as $item)
 
 <div x-data="{ open: false }" class="bg-white p-3 rounded-xl shadow-sm">
-
+   
     <!-- STATUS -->
     <div class="relative flex justify-center">
         <div class="absolute top-0 left-0 -translate-x-2 -translate-y-2 

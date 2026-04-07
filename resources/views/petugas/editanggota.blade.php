@@ -6,6 +6,7 @@
 <div class="bg-white p-4 rounded-xl shadow">
     <form action="{{ route('anggota.update', $anggota->id) }}" method="POST">
         @csrf
+        @method('PUT')
 
         <div class="mb-4">
             <label class="block mb-1">Nama</label>

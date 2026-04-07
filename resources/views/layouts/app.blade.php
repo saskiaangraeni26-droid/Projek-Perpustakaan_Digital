@@ -2,15 +2,14 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
 
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- ✅ Alpine -->
+    <!-- Alpine -->
     <script src="//unpkg.com/alpinejs" defer></script>
 
-    <!-- ✅ Fix biar modal ga glitch -->
+    <!-- Fix Alpine -->
     <style>
         [x-cloak] { display: none !important; }
     </style>
@@ -51,7 +50,6 @@
         <ul class="space-y-3">
 
             @if($role === 'petugas')
-
                 <li><a href="/dashboard" class="block hover:bg-[#a85a5a] p-2 rounded">Dashboard</a></li>
                 <li><a href="{{ route('buku.management') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Data Buku</a></li>
                 <li><a href="{{ route('data_anggota.petugas') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Data Anggota</a></li>
@@ -59,34 +57,18 @@
                 <li><a href="{{ route('petugas.konfirmasi') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Data Pengembalian</a></li>
 
             @elseif($role === 'kepala')
-
                 <li><a href="/dashboard" class="block hover:bg-[#a85a5a] p-2 rounded">Dashboard</a></li>
-               <a href="{{ route('kepala.buku') }}" 
-            class="block hover:bg-[#a85a5a] p-2 rounded">
-              Data Buku
-            </a>
-                <a href="{{ route('kepala.anggota') }}" 
-            class="block hover:bg-[#a85a5a] p-2 rounded">
-                Data Anggota
-            </a>
-                <a href="{{ route('kepala.petugas') }}" 
-            class="block hover:bg-[#a85a5a] p-2 rounded">
-                Data Petugas
-            </a>
-               <li>
-            <a href="{{ route('kepala.laporan') }}" 
-            class="block hover:bg-[#a85a5a] p-2 rounded">
-                Laporan
-            </a>
-        </li>
-            @elseif($role === 'anggota')
+                <li><a href="{{ route('kepala.buku') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Data Buku</a></li>
+                <li><a href="{{ route('kepala.anggota') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Data Anggota</a></li>
+                <li><a href="{{ route('kepala.petugas') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Data Petugas</a></li>
+                <li><a href="{{ route('kepala.laporan') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Laporan</a></li>
 
+            @elseif($role === 'anggota')
                 <li><a href="/dashboard" class="block hover:bg-[#a85a5a] p-2 rounded">Dashboard</a></li>
                 <li><a href="{{ route('buku.index') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Daftar Buku</a></li>
                 <li><a href="{{ route('peminjaman.aktif') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Peminjaman</a></li>
                 <li><a href="{{ route('pengembalian.buku') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Pengembalian</a></li>
                 <li><a href="{{ route('peminjaman.riwayat') }}" class="block hover:bg-[#a85a5a] p-2 rounded">Riwayat</a></li>
-
             @endif
 
             <!-- Logout -->
@@ -110,20 +92,46 @@
         <!-- Navbar -->
         <div class="bg-white/80 backdrop-blur p-4 flex justify-between items-center shadow-sm fixed top-0 left-64 right-0 z-30">
 
-            <h1 class="font-semibold text-gray-700 text-lg">
-                Dashboard
-            </h1>
+            <h1 class="font-semibold text-gray-700 text-lg"></h1>
 
             @auth
-            <div class="flex items-center space-x-3">
-                <div class="text-right">
+            <div class="flex items-center space-x-3 relative" x-data="{ open: false }">
+
+                <!-- Nama + Role -->
+                <div class="text-right cursor-pointer" @click="open = !open">
                     <p class="font-semibold text-gray-700">{{ auth()->user()->name }}</p>
                     <p class="text-sm text-gray-500 capitalize">{{ auth()->user()->role }}</p>
                 </div>
+
+                <!-- Avatar -->
                 <img 
+                    @click="open = !open"
                     src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}" 
-                    class="w-10 h-10 rounded-full border"
+                    class="w-10 h-10 rounded-full border cursor-pointer"
                 >
+
+                <!-- Dropdown -->
+                <div 
+                    x-show="open" 
+                    @click.away="open = false"
+                    x-cloak
+                    class="absolute right-0 top-14 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
+                >
+
+                    <a href="{{ route('profile') }}" 
+                       class="block px-4 py-2 hover:bg-gray-100">
+                       Profile
+                    </a>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button class="w-full text-left px-4 py-2 hover:bg-gray-100">
+                            Logout
+                        </button>
+                    </form>
+
+                </div>
+
             </div>
             @endauth
 

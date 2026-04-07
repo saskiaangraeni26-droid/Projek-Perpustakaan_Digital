@@ -50,23 +50,22 @@ class PinjamController extends Controller
         ->where('user_id', Auth::id())
         ->whereIn('status', ['menunggu', 'dipinjam', 'menunggu_konfirmasi', 'dikembalikan'])
         ->latest()
-        ->get();
+        ->paginate(2); // 🔥 pagination
 
     return view('anggota.peminjaman', compact('data'));
 }
 
     // 🔹 RIWAYAT (SELESAI)
     public function riwayat()
-    {
-        $data = Peminjaman::with('buku')
-            ->where('user_id', Auth::id())
-            ->where('status', 'dikembalikan')
-            ->latest()
-            ->get();
+{
+    $data = Peminjaman::with('buku')
+        ->where('user_id', Auth::id())
+        ->where('status', 'dikembalikan')
+        ->latest()
+        ->paginate(2); // 🔥 pagination
 
-        return view('anggota.rekap', compact('data'));
-    }
-
+    return view('anggota.rekap', compact('data'));
+}
     // 🔹 HALAMAN PENGEMBALIAN
     public function pengembalian()
 {
@@ -74,7 +73,7 @@ class PinjamController extends Controller
         ->where('user_id', Auth::id())
         ->whereIn('status', ['dipinjam', 'menunggu_konfirmasi', 'dikembalikan'])
         ->latest()
-        ->get();
+        ->paginate(2); // 🔥 pagination
 
     return view('anggota.pengembalian', compact('data'));
 }
@@ -88,32 +87,63 @@ class PinjamController extends Controller
 
     // 🔹 AJUKAN PENGEMBALIAN
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'tgl_dikembalikan' => 'required|date'
-        ]);
+{
+    $request->validate([
+        'tgl_dikembalikan' => 'required|date'
+    ]);
 
-        $pinjam = Peminjaman::findOrFail($id);
+    $pinjam = Peminjaman::with('buku')->findOrFail($id);
 
-        if ($pinjam->status == 'dipinjam') {
-            $pinjam->status = 'menunggu_konfirmasi';
-            $pinjam->tgl_dikembalikan = $request->tgl_dikembalikan;
-            $pinjam->save();
-        }
+    // 🔥 hitung denda
+    $jatuhTempo = \Carbon\Carbon::parse($pinjam->tgl_kembali);
+    $dikembalikan = \Carbon\Carbon::parse($request->tgl_dikembalikan);
 
-        return redirect()->route('pengembalian.buku')
-            ->with('success', 'Pengajuan pengembalian berhasil!');
+    $terlambat = $dikembalikan->gt($jatuhTempo)
+        ? $jatuhTempo->diffInDays($dikembalikan)
+        : 0;
+
+    $denda = $terlambat * 5000;
+
+    // simpan
+    if ($pinjam->status == 'dipinjam') {
+        $pinjam->status = 'menunggu_konfirmasi';
+        $pinjam->tgl_dikembalikan = $request->tgl_dikembalikan;
+        $pinjam->save();
     }
+
+    // 🔥 redirect ke popup
+    return redirect()->route('anggota.preview_kembali', $pinjam->id);
+}
+
+public function previewKembali($id)
+{
+    $pinjam = Peminjaman::with('buku')->findOrFail($id);
+
+    $jatuhTempo = \Carbon\Carbon::parse($pinjam->tgl_kembali);
+    $dikembalikan = \Carbon\Carbon::parse($pinjam->tgl_dikembalikan);
+
+    $terlambat = $dikembalikan->gt($jatuhTempo)
+        ? $jatuhTempo->diffInDays($dikembalikan)
+        : 0;
+
+    $denda = $terlambat * 5000;
+
+    return view('anggota.preview_kembali', compact('pinjam', 'denda'));
+}
 
     // ================== PETUGAS ==================
 
     // 🔹 DATA PEMINJAMAN PETUGAS
-   public function index()
+   public function index(Request $request)
 {
     $data = Peminjaman::with('buku', 'user')
         ->whereIn('status', ['menunggu', 'dipinjam', 'menunggu_konfirmasi', 'dikembalikan'])
+        ->when($request->search, function ($query) use ($request) {
+            $query->where('nama', 'like', '%' . $request->search . '%');
+        })
         ->latest()
-        ->get();
+        ->paginate(3) // 🔥 pagination
+        ->appends($request->all()); // 🔥 biar search tetap
 
     return view('petugas.peminjaman', compact('data'));
 }
@@ -137,19 +167,19 @@ class PinjamController extends Controller
     }
 
     // 🔹 KONFIRMASI PENGEMBALIAN (HALAMAN)
-    public function konfirmasiPengembalian(Request $request)
+public function konfirmasiPengembalian(Request $request)
 {
-    $query = Peminjaman::with('buku', 'user')
-        ->whereIn('status', ['menunggu_konfirmasi', 'dikembalikan']);
-
-    if ($request->search) {
-        $query->where(function ($q) use ($request) {
-            $q->where('nama', 'like', '%' . $request->search . '%')
-              ->orWhere('email', 'like', '%' . $request->search . '%');
-        });
-    }
-
-    $data = $query->latest()->get();
+    $data = Peminjaman::with('buku', 'user')
+        ->whereIn('status', ['menunggu_konfirmasi', 'dikembalikan'])
+        ->when($request->search, function ($query) use ($request) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%');
+            });
+        })
+        ->latest()
+        ->paginate(2) // 🔥 pagination
+        ->appends($request->all()); // 🔥 biar search ga hilang
 
     return view('petugas.konfirmasi', compact('data'));
 }
