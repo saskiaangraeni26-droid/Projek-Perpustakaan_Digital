@@ -6,6 +6,7 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\KepalaController;
+use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Route;
 
 // 🔹 HOME
@@ -68,12 +69,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('petugas.peminjaman');
 
     // 🔹 Setujui pinjam
-    Route::post('/petugas/peminjaman/{id}/setujui', [PinjamController::class, 'setujui'])
-        ->name('petugas.setujui');
-
-    // 🔹 Tolak pinjam
-    Route::post('/petugas/peminjaman/{id}/tolak', [PinjamController::class, 'tolak'])
-        ->name('petugas.tolak');
+    Route::put('/petugas/peminjaman/{id}/setujui', [PinjamController::class, 'setujui'])
+    ->name('petugas.setujui');
 
     // 🔹 Konfirmasi pengembalian + denda
     Route::get('/petugas/konfirmasi', [PinjamController::class, 'konfirmasiPengembalian'])
@@ -81,7 +78,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::put('/petugas/konfirmasi/{id}', [PinjamController::class, 'konfirmasiKembali'])
         ->name('petugas.konfirmasi.kembali');
-
 
 
     // ================== DATA ANGGOTA ==================
@@ -96,8 +92,15 @@ Route::middleware(['auth'])->group(function () {
 
 
     // ================== kepala ==================
-   Route::get('/laporan-kepala', [PinjamController::class, 'laporanKepala'])
-    ->name('kepala.laporan');
+   Route::middleware(['auth'])->group(function () {
+
+    Route::get('/kepala/laporan-peminjaman', [LaporanController::class, 'laporanPeminjaman'])
+        ->name('kepala.laporanpeminjaman');
+
+    Route::get('/kepala/laporan-pengembalian', [LaporanController::class, 'laporanPengembalian'])
+        ->name('kepala.laporanpengembalian');
+
+    });
 
     Route::get('/kepala/buku', [BukuController::class, 'kepalaIndex'])->name('kepala.buku');
 
@@ -113,6 +116,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/kepala/anggota', [KepalaController::class, 'dataAnggota'])
     ->name('kepala.anggota');
     
+    Route::get('/kepala/laporan-pengembalian/pdf', [LaporanController::class, 'exportPdf'])
+    ->name('kepala.laporanpengembalian.pdf');
+
+    Route::get('/kepala/laporan-peminjaman/pdf', 
+    [LaporanController::class, 'exportPeminjamanPdf']
+)->name('kepala.laporanpeminjaman.pdf');
 
 });
 

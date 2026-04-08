@@ -28,7 +28,7 @@
                 <th class="p-2">Jatuh Tempo</th>
                 <th class="p-2">Dikembalikan</th>
                 <th class="p-2">Denda</th>
-                <th class="p-2">Aksi</th>
+                <th class="p-2">Konfirmasi</th>
             </tr>
         </thead>
 

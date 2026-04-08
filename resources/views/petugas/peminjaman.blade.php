@@ -38,7 +38,7 @@
                 <th class="p-3">Tanggal Pinjam</th>
                 <th class="p-3">Tanggal Kembali</th>
                 <th class="p-3">Status</th>
-                <th class="p-3">Aksi</th>
+                <th class="p-3">Konfirmasi</th>
             </tr>
         </thead>
 
@@ -85,17 +85,32 @@
 
             <!-- AKSI -->
             <td class="p-3">
-                @if($item->status == 'menunggu')
-                    <form action="{{ route('petugas.setujui', $item->id) }}" method="POST">
-                        @csrf
-                        <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
-                            ✔
-                        </button>
-                    </form>
-                @else
-                    <span class="text-gray-400">-</span>
-                @endif
-            </td>
+    @if($item->status == 'menunggu')
+        <form action="{{ route('petugas.setujui', $item->id) }}" method="POST">
+    @csrf
+    @method('PUT')
+
+    <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+        ✔
+    </button>
+</form>
+
+    @elseif($item->status == 'dipinjam')
+        <span class="inline-flex items-center justify-center w-8 h-8 bg-green-500 text-white rounded-full">
+            ✔
+        </span>
+
+    @elseif($item->status == 'selesai')
+        <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-500 text-white rounded-full">
+            ✓
+        </span>
+
+    @else
+        <span class="inline-flex items-center justify-center w-8 h-8 bg-gray-400 text-white rounded-full">
+            -
+        </span>
+    @endif
+</td>
 
         </tr>
 

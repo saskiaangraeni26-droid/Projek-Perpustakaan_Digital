@@ -50,7 +50,7 @@ class PinjamController extends Controller
         ->where('user_id', Auth::id())
         ->whereIn('status', ['menunggu', 'dipinjam', 'menunggu_konfirmasi', 'dikembalikan'])
         ->latest()
-        ->paginate(2); // 🔥 pagination
+        ->paginate(5); // 🔥 pagination
 
     return view('anggota.peminjaman', compact('data'));
 }
@@ -62,7 +62,7 @@ class PinjamController extends Controller
         ->where('user_id', Auth::id())
         ->where('status', 'dikembalikan')
         ->latest()
-        ->paginate(2); // 🔥 pagination
+        ->paginate(5); // 🔥 pagination
 
     return view('anggota.rekap', compact('data'));
 }
@@ -73,7 +73,7 @@ class PinjamController extends Controller
         ->where('user_id', Auth::id())
         ->whereIn('status', ['dipinjam', 'menunggu_konfirmasi', 'dikembalikan'])
         ->latest()
-        ->paginate(2); // 🔥 pagination
+        ->paginate(5); // 🔥 pagination
 
     return view('anggota.pengembalian', compact('data'));
 }
@@ -142,7 +142,7 @@ public function previewKembali($id)
             $query->where('nama', 'like', '%' . $request->search . '%');
         })
         ->latest()
-        ->paginate(3) // 🔥 pagination
+        ->paginate(5) // 🔥 pagination
         ->appends($request->all()); // 🔥 biar search tetap
 
     return view('petugas.peminjaman', compact('data'));
@@ -178,7 +178,7 @@ public function konfirmasiPengembalian(Request $request)
             });
         })
         ->latest()
-        ->paginate(2) // 🔥 pagination
+        ->paginate(5) // 🔥 pagination
         ->appends($request->all()); // 🔥 biar search ga hilang
 
     return view('petugas.konfirmasi', compact('data'));
