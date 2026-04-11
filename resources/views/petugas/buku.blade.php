@@ -73,7 +73,7 @@
                         {{-- EDIT --}}
                         <a href="{{ route('buku.edit', $item->id_buku) }}"
                            class="bg-yellow-500 px-3 py-1 rounded text-white hover:bg-yellow-600 text-sm">
-                           ✏️ Edit
+                           Edit
                         </a>
 
                         {{-- HAPUS --}}

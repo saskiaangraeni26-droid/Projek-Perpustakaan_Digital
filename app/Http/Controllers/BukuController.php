@@ -59,8 +59,8 @@ class BukuController extends Controller
 }
 
     // ================= UPDATE =================
-    public function update(Request $request, $id)
-    {
+ public function update(Request $request, $id)
+{
     $request->validate([
         'judul_buku' => 'required|unique:buku,judul_buku,' . $id . ',id_buku',
         'penulis' => 'required',
@@ -72,8 +72,8 @@ class BukuController extends Controller
     $buku = Buku::findOrFail($id);
     $buku->update($request->all());
 
-      return redirect()->route('buku.management')->with('success', 'Buku berhasil diupdate');
-    }
+    return redirect()->route('buku.management')->with('success', 'Buku berhasil diupdate');
+}
     // ================= DELETE =================
     public function destroy($id)
     {
@@ -131,7 +131,7 @@ class BukuController extends Controller
     return view('kepala.buku', compact('buku'));
 }
 
-//------------------ EDIT BUKU ---------------
+//-------------------
 public function edit($id)
 {
     $buku = Buku::findOrFail($id);

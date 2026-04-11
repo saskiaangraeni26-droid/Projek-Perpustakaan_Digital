@@ -3,12 +3,13 @@
 @section('content')
 
 <h1 class="text-2xl font-semibold mb-6">Data Buku</h1>
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
 
 @forelse($buku as $item)
 
-<div x-data="{ open: false }" class="bg-white p-3 rounded-xl shadow-sm">
-   
+<div x-data="{ open: false }" class="bg-white p-3 rounded-xl shadow-sm flex flex-col h-full hover:shadow-md transition">
+
     <!-- STATUS -->
     <div class="relative flex justify-center">
         <div class="absolute top-0 left-0 -translate-x-2 -translate-y-2 
@@ -19,20 +20,22 @@
         </div>
 
         <img src="{{ $item->cover ? asset('storage/' . $item->cover) : 'https://via.placeholder.com/150' }}"
-             class="rounded-lg w-28 h-40 object-cover">
+             class="rounded-lg w-28 h-40 object-cover hover:scale-105 transition">
     </div>
 
     <!-- DATA -->
-    <h3 class="text-sm font-semibold mt-2 line-clamp-2">
-        {{ $item->judul_buku }}
-    </h3>
+    <div class="flex-grow">
+        <h3 class="text-sm font-semibold mt-2 line-clamp-2 min-h-[40px]">
+            {{ $item->judul_buku }}
+        </h3>
 
-    <p class="text-gray-500 text-xs">
-        {{ $item->penulis }}
-    </p>
+        <p class="text-gray-500 text-xs">
+            {{ $item->penulis }}
+        </p>
+    </div>
 
-    <!-- 🔥 BUTTON SEBELAHAN -->
-    <div class="flex gap-2 mt-2">
+    <!-- BUTTON -->
+    <div class="flex gap-2 mt-3">
 
         <!-- DETAIL -->
         <button @click="open = true"
@@ -57,7 +60,7 @@
 
     </div>
 
-    <!-- 🔥 MODAL (KAYAK GAMBAR LU) -->
+    <!-- MODAL -->
     <div x-show="open" 
          x-transition
          @click.self="open = false"
@@ -82,7 +85,7 @@
 
             <!-- TOMBOL -->
             <button @click="open = false"
-                class="mt-4 bg-gray-300 px-4 py-1 rounded">
+                class="mt-4 bg-gray-300 px-4 py-1 rounded hover:bg-gray-400">
                 Tutup
             </button>
 

@@ -80,8 +80,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/petugas/konfirmasi/{id}', [PinjamController::class, 'konfirmasiKembali'])
         ->name('petugas.konfirmasi.kembali');
 
-
-
+    
 
     // ================== DATA ANGGOTA ==================
     Route::get('/data-anggota', [AnggotaController::class, 'index'])->name('data_anggota.petugas');

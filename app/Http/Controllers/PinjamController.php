@@ -62,7 +62,7 @@ class PinjamController extends Controller
         ->where('user_id', Auth::id())
         ->where('status', 'dikembalikan')
         ->latest()
-        ->paginate(5); // 🔥 pagination
+        ->paginate(5); // pagination
 
     return view('anggota.rekap', compact('data'));
 }
@@ -73,7 +73,7 @@ class PinjamController extends Controller
         ->where('user_id', Auth::id())
         ->whereIn('status', ['dipinjam', 'menunggu_konfirmasi', 'dikembalikan'])
         ->latest()
-        ->paginate(5); // 🔥 pagination
+        ->paginate(5); //pagination
 
     return view('anggota.pengembalian', compact('data'));
 }
@@ -94,7 +94,7 @@ class PinjamController extends Controller
 
     $pinjam = Peminjaman::with('buku')->findOrFail($id);
 
-    // 🔥 hitung denda
+    // hitung denda
     $jatuhTempo = \Carbon\Carbon::parse($pinjam->tgl_kembali);
     $dikembalikan = \Carbon\Carbon::parse($request->tgl_dikembalikan);
 
@@ -111,7 +111,7 @@ class PinjamController extends Controller
         $pinjam->save();
     }
 
-    // 🔥 redirect ke popup
+    // redirect ke popup
     return redirect()->route('anggota.preview_kembali', $pinjam->id);
 }
 
@@ -142,8 +142,8 @@ public function previewKembali($id)
             $query->where('nama', 'like', '%' . $request->search . '%');
         })
         ->latest()
-        ->paginate(5) // 🔥 pagination
-        ->appends($request->all()); // 🔥 biar search tetap
+        ->paginate(5) // pagination
+        ->appends($request->all()); // biar search tetap
 
     return view('petugas.peminjaman', compact('data'));
 }
@@ -178,8 +178,8 @@ public function konfirmasiPengembalian(Request $request)
             });
         })
         ->latest()
-        ->paginate(5) // 🔥 pagination
-        ->appends($request->all()); // 🔥 biar search ga hilang
+        ->paginate(5) // pagination
+        ->appends($request->all()); //  biar search ga hilang
 
     return view('petugas.konfirmasi', compact('data'));
 }
