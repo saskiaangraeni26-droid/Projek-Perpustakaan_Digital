@@ -50,8 +50,8 @@
             <thead class="bg-gray-200">
                 <tr>
                     <th class="p-2 border">No</th>
+                     <th class="p-2 border">Nama</th>
                     <th class="p-2 border">Judul Buku</th>
-                    <th class="p-2 border">Nama</th>
                     <th class="p-2 border">Tanggal Pinjam</th>
                     <th class="p-2 border">Jatuh Tempo</th>
                     <th class="p-2 border">Status</th>
@@ -69,10 +69,10 @@
 
                     <tr class="hover:bg-gray-50">
                         <td class="border p-2">{{ $no++ }}</td>
+                        <td class="border p-2">{{ $item->nama }}</td>
                         <td class="border p-2">
                             {{ optional($item->buku)->judul_buku ?? '-' }}
                         </td>
-                        <td class="border p-2">{{ $item->nama }}</td>
                         <td class="border p-2">{{ $tglPinjam->format('d M Y') }}</td>
                         <td class="border p-2">{{ $jatuhTempo->format('d M Y') }}</td>
 

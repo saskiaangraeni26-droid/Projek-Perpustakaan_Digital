@@ -21,7 +21,7 @@
                 <th class="p-2">Cover</th>
                 <th class="p-2">Judul Buku</th>
                 <th class="p-2">Penulis</th>
-                <th class="p-2">Tahun Terbit</th> {{-- 🔥 tambahan --}}
+                <th class="p-2">Tahun Terbit</th> 
                 <th class="p-2">Status</th>
                 <th class="p-2">Stok</th>
                 <th class="p-2 text-center">Aksi</th>

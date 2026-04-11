@@ -19,6 +19,9 @@
             <label class="block">Email</label>
             <input type="email" name="email" class="border p-2 w-full" required>
         </div>
+        @error('email')
+    <div class="text-red-500 text-sm">{{ $message }}</div>
+    @enderror
 
         <!-- Status -->
         <div class="mb-3">

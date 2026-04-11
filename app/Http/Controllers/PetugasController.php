@@ -8,26 +8,48 @@ use Illuminate\Support\Facades\Hash;
 
 class PetugasController extends Controller
 {
+    public function index()
+{
+    $petugas = User::where('role', 'petugas')->get();
+
+    return view('kepala.petugas', compact('petugas'));
+}
+
     public function create()
     {
-        return view('petugas.create');
+        return view('kepala.tambahpetugas');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:5'
-        ]);
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|min:5'
+    ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'petugas'
-        ]);
+    User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => 'petugas'
+    ]);
 
-        return redirect()->back()->with('success', 'Petugas berhasil ditambahkan');
+    return redirect()->route('kepala.petugas')
+        ->with('success', 'Petugas berhasil ditambahkan');
+    }
+
+    public function destroy($id)
+    {
+    $user = User::findOrFail($id);
+
+    // biar ga bisa hapus diri sendiri
+    if ($user->id == auth()->id()) {
+        return back()->with('error', 'Tidak bisa hapus akun sendiri');
+    }
+
+    $user->delete();
+
+    return redirect()->back()->with('success', 'Petugas berhasil dihapus');
     }
 }

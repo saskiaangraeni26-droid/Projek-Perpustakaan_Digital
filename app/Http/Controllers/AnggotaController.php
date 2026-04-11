@@ -5,22 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Anggota;
 use Illuminate\Http\Request;
 
+// ✅ TAMBAHAN
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 class AnggotaController extends Controller
 {
     // 🔹 TAMPIL DATA
     public function index(Request $request)
-{
-    $query = \App\Models\User::where('role', 'anggota');
+    {
+        $query = \App\Models\User::where('role', 'anggota');
 
-    if ($request->search) {
-        $query->where('name', 'like', '%' . $request->search . '%')
-              ->orWhere('email', 'like', '%' . $request->search . '%');
+        if ($request->search) {
+            $query->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%');
+        }
+
+        $anggota = $query->get();
+
+        return view('petugas.data_anggota', compact('anggota'));
     }
-
-    $anggota = $query->get();
-
-    return view('petugas.data_anggota', compact('anggota'));
-}
 
     // 🔹 FORM TAMBAH
     public function create()
@@ -33,14 +37,22 @@ class AnggotaController extends Controller
     {
         $request->validate([
             'nama' => 'required',
-            'email' => 'required|email|unique:anggotas,email',
+            // ❌ sebelumnya anggotas → ✅ sekarang users
+            'email' => 'required|email|unique:users,email',
+        ], [
+            'email.unique' => 'Email sudah terdaftar!'
         ]);
 
-        Anggota::create([
-            'nama' => $request->nama,
+        // 🔥 TAMBAHAN: SIMPAN KE USERS (BIAR MUNCUL DI HALAMAN)
+        User::create([
+            'name' => $request->nama,
             'email' => $request->email,
+            'password' => Hash::make('password123'),
+            'role' => 'anggota',
             'status' => 1
         ]);
+
+        // (Kode lama kamu tidak dihapus, tapi sekarang tidak dipakai lagi)
 
         return redirect()->route('data_anggota.petugas')
             ->with('success', 'Data anggota berhasil ditambahkan!');
@@ -48,10 +60,10 @@ class AnggotaController extends Controller
 
     // 🔹 FORM EDIT
     public function edit($id)
-    {
-        $anggota = Anggota::findOrFail($id);
-        return view('petugas.editanggota', compact('anggota'));
-    }
+{
+    $anggota = \App\Models\User::where('role', 'anggota')->findOrFail($id);
+    return view('petugas.editanggota', compact('anggota'));
+}
 
     // 🔹 DETAIL
     public function show($id)
@@ -67,7 +79,8 @@ class AnggotaController extends Controller
 
         $request->validate([
             'nama' => 'required',
-            'email' => 'required|email|unique:anggotas,email,' . $id,
+            // ❌ sebelumnya anggotas → ✅ users
+            'email' => 'required|email|unique:users,email,' . $id,
         ]);
 
         $anggota->update([
@@ -82,11 +95,11 @@ class AnggotaController extends Controller
 
     // 🔹 HAPUS
     public function destroy($id)
-    {
-        $anggota = Anggota::findOrFail($id);
-        $anggota->delete();
+{
+    $anggota = \App\Models\User::findOrFail($id);
+    $anggota->delete();
 
-        return redirect()->route('data_anggota.petugas')
-            ->with('success', 'Data anggota berhasil dihapus!');
-    }
+    return redirect()->route('data_anggota.petugas')
+        ->with('success', 'Data anggota berhasil dihapus!');
+}
 }

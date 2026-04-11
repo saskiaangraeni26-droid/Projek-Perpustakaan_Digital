@@ -125,14 +125,6 @@
                        class="block px-4 py-2 hover:bg-gray-100">
                         Profile
                     </a>
-
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button class="w-full text-left px-4 py-2 hover:bg-gray-100">
-                            Logout
-                        </button>
-                    </form>
-
                 </div>
 
             </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\KepalaController;
+use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Route;
 
@@ -80,6 +81,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('petugas.konfirmasi.kembali');
 
 
+
+
     // ================== DATA ANGGOTA ==================
     Route::get('/data-anggota', [AnggotaController::class, 'index'])->name('data_anggota.petugas');
     Route::get('/tambah-anggota', [AnggotaController::class, 'create']);
@@ -124,5 +127,11 @@ Route::middleware(['auth'])->group(function () {
 )->name('kepala.laporanpeminjaman.pdf');
 
 });
+
+Route::get('/kepala/tambahpetugas', [PetugasController::class, 'create'])->name('kepala.tambahpetugas');
+Route::post('/kepala/store', [PetugasController::class, 'store'])->name('kepala.store');
+Route::get('/kepala/petugas', [PetugasController::class, 'index'])->name('kepala.petugas');
+Route::delete('/petugas/{id}', [PetugasController::class, 'destroy'])->name('petugas.destroy');
+
 
 require __DIR__.'/auth.php';

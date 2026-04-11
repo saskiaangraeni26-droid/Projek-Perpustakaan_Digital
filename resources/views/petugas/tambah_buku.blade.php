@@ -12,6 +12,9 @@
         {{-- Judul --}}
         <input type="text" name="judul_buku" placeholder="Judul Buku"
             class="border p-2 w-full mb-2 rounded" required>
+        @error('judul_buku')
+            <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
+        @enderror
 
         {{-- Penulis --}}
         <input type="text" name="penulis" placeholder="Penulis"

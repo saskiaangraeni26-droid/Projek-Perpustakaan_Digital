@@ -31,8 +31,8 @@
     <thead>
         <tr>
             <th>No</th>
-            <th>Judul</th>
             <th>Nama</th>
+            <th>Judul</th>
             <th>Tgl Pinjam</th>
             <th>Jatuh Tempo</th>
             <th>Status</th>
@@ -44,8 +44,8 @@
         @foreach($data as $item)
         <tr>
             <td>{{ $no++ }}</td>
-            <td>{{ optional($item->buku)->judul_buku }}</td>
             <td>{{ $item->nama }}</td>
+            <td>{{ optional($item->buku)->judul_buku }}</td>
             <td>{{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d-m-Y') }}</td>
             <td>{{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d-m-Y') }}</td>
             <td>

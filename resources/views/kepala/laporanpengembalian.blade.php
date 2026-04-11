@@ -2,116 +2,129 @@
 
 @section('content')
 
-<h2 class="text-xl font-bold mb-4 text-center">LAPORAN PENGEMBALIAN BUKU</h2>
+<div class="bg-white p-6 rounded-2xl shadow-md">
 
-{{-- 🔍 FILTER + PDF --}}
-<div class="bg-white p-4 rounded-xl shadow mb-4">
-    <form method="GET" class="flex flex-wrap gap-3 items-end">
+    <!-- Judul -->
+    <h2 class="text-xl font-bold text-center mb-4">
+        LAPORAN PENGEMBALIAN BUKU
+    </h2>
 
-        <div>
-            <label class="text-sm">Dari</label>
-            <input type="date" name="dari" value="{{ request('dari') }}"
-                class="border p-2 rounded w-full">
-        </div>
+    <!-- FILTER -->
+    <div class="bg-gray-50 p-4 rounded-xl shadow-sm mb-4">
+        <form method="GET" class="flex items-end gap-4 flex-wrap">
 
-        <div>
-            <label class="text-sm">Sampai</label>
-            <input type="date" name="sampai" value="{{ request('sampai') }}"
-                class="border p-2 rounded w-full">
-        </div>
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Dari</label>
+                <input type="date" name="dari" value="{{ request('dari') }}"
+                    class="border px-3 py-2 rounded-lg w-44">
+            </div>
 
-        <div class="flex gap-2">
-            <button type="submit"
-                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Filter
-            </button>
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Sampai</label>
+                <input type="date" name="sampai" value="{{ request('sampai') }}"
+                    class="border px-3 py-2 rounded-lg w-44">
+            </div>
 
-            <a href="{{ route('kepala.laporanpengembalian') }}"
-                class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
-                Reset
-            </a>
+            <div class="flex gap-2">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                    Filter
+                </button>
 
-            {{-- 📄 PDF --}}
-            <a href="{{ route('kepala.laporanpengembalian.pdf', request()->all()) }}"
-            target="_blank"
-            class="bg-red-500 text-white px-4 py-2 rounded">
-            Cetak PDF
-            </a>
-        </div>
+                <a href="{{ route('kepala.laporanpengembalian') }}"
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+                    Reset
+                </a>
 
-    </form>
-</div>
+                <a href="{{ route('kepala.laporanpengembalian.pdf', request()->query()) }}"
+                    target="_blank"
+                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                    Cetak PDF
+                </a>
+            </div>
 
-{{-- 📊 TABLE --}}
-<div class="bg-white p-4 rounded-xl shadow">
+        </form>
+    </div>
 
-<table class="w-full text-sm text-center border border-gray-300">
-    <thead class="bg-gray-200">
-        <tr>
-            <th class="p-2 border">No</th>
-            <th class="p-2 border">Judul Buku</th>
-            <th class="p-2 border">Nama</th>
-            <th class="p-2 border">Tanggal Pinjam</th>
-            <th class="p-2 border">Jatuh Tempo</th>
-            <th class="p-2 border">Tanggal Kembali</th>
-            <th class="p-2 border">Terlambat</th>
-            <th class="p-2 border">Denda</th>
-        </tr>
-    </thead>
-    <tbody>
+    <!-- TABLE -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-center border border-gray-300">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="p-2 border">No</th>
+                    <th class="p-2 border">Nama</th>
+                    <th class="p-2 border">Judul Buku</th>
+                    <th class="p-2 border">Tanggal Pinjam</th>
+                    <th class="p-2 border">Jatuh Tempo</th>
+                    <th class="p-2 border">Tanggal Kembali</th>
+                    <th class="p-2 border">Status</th>
+                    <th class="p-2 border">Terlambat</th>
+                    <th class="p-2 border">Denda</th>
+                </tr>
+            </thead>
 
-    @php $no = 1; $totalDenda = 0; @endphp
+            <tbody>
+                @php $no = 1; $totalDenda = 0; @endphp
 
-    @forelse($data as $item)
-        @php
-            $tglPinjam = \Carbon\Carbon::parse($item->tgl_pinjam);
-            $jatuhTempo = \Carbon\Carbon::parse($item->tgl_kembali);
-            $dikembalikan = \Carbon\Carbon::parse($item->tgl_dikembalikan);
+                @forelse($data as $item)
+                    @php
+                        $tglPinjam = \Carbon\Carbon::parse($item->tgl_pinjam);
+                        $jatuhTempo = \Carbon\Carbon::parse($item->tgl_kembali);
+                        $dikembalikan = $item->tgl_dikembalikan 
+                                        ? \Carbon\Carbon::parse($item->tgl_dikembalikan) 
+                                        : null;
 
-            $terlambat = $dikembalikan->gt($jatuhTempo) 
-                ? $jatuhTempo->diffInDays($dikembalikan) 
-                : 0;
+                        $terlambat = $dikembalikan && $dikembalikan->gt($jatuhTempo) 
+                                     ? $jatuhTempo->diffInDays($dikembalikan) 
+                                     : 0;
 
-            $denda = $terlambat * 5000;
-            $totalDenda += $denda;
-        @endphp
+                        $denda = $terlambat * 5000;
+                        $totalDenda += $denda;
+                    @endphp
 
-        <tr>
-            <td class="border p-2">{{ $no++ }}</td>
-            <td class="border">{{ optional($item->buku)->judul_buku ?? '-' }}</td>
-            <td class="border">{{ $item->nama }}</td>
-            <td class="border">{{ $tglPinjam->format('d M Y') }}</td>
-            <td class="border">{{ $jatuhTempo->format('d M Y') }}</td>
-            <td class="border">{{ $dikembalikan->format('d M Y') }}</td>
-            <td class="border">{{ $terlambat }} hari</td>
-            <td class="border text-red-500 font-semibold">
-                Rp {{ number_format($denda, 0, ',', '.') }}
-            </td>
-        </tr>
+                    <tr class="hover:bg-gray-50">
+                        <td class="border p-2">{{ $no++ }}</td>
+                        <td class="border p-2">{{ $item->nama }}</td>
+                        <td class="border p-2">{{ optional($item->buku)->judul_buku ?? '-' }}</td>
+                        <td class="border p-2">{{ $tglPinjam->format('d M Y') }}</td>
+                        <td class="border p-2">{{ $jatuhTempo->format('d M Y') }}</td>
+                        <td class="border p-2">{{ $dikembalikan ? $dikembalikan->format('d M Y') : '-' }}</td>
 
-    @empty
-        <tr>
-            <td colspan="8" class="p-4">Tidak ada data</td>
-        </tr>
-    @endforelse
+                        <!-- STATUS -->
+                        <td class="border p-2 text-green-600 font-semibold">
+                            Selesai
+                        </td>
 
-    </tbody>
+                        <td class="border p-2">{{ $terlambat }} hari</td>
+                        <td class="border p-2 text-red-500 font-semibold">
+                            Rp {{ number_format($denda,0,',','.') }}
+                        </td>
+                    </tr>
 
-    {{-- TOTAL --}}
-    <tfoot>
-        <tr class="bg-gray-100 font-bold">
-            <td colspan="7" class="text-right p-2 border">Total Denda</td>
-            <td class="border text-red-600">
-                Rp {{ number_format($totalDenda, 0, ',', '.') }}
-            </td>
-        </tr>
-    </tfoot>
-</table>
+                @empty
+                    <tr>
+                        <td colspan="9" class="p-4 text-gray-500">
+                            Tidak ada data
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
 
-{{-- PAGINATION --}}
-<div class="mt-4">
-    {{ $data->withQueryString()->links() }}
-</div>
+            <!-- TOTAL DENDA -->
+            <tfoot>
+                <tr class="bg-gray-100 font-bold">
+                    <td colspan="8" class="text-right p-2 border">Total Denda</td>
+                    <td class="border text-red-600">
+                        Rp {{ number_format($totalDenda,0,',','.') }}
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="mt-4">
+        {{ $data->withQueryString()->links() }}
+    </div>
 
 </div>
 

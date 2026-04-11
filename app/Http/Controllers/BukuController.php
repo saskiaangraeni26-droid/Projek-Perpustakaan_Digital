@@ -29,53 +29,51 @@ class BukuController extends Controller
 
     // ================= STORE =================
     public function store(Request $request)
-    {
-        $coverPath = null;
+{
+    $request->validate([
+        'judul_buku' => 'required|unique:buku,judul_buku',
+        'penulis' => 'required',
+        'tahun_terbit' => 'nullable|numeric',
+        'stok' => 'required|numeric|min:0',
+        'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+    ], [
+        'judul_buku.unique' => 'Judul buku sudah ada, tidak boleh sama!'
+    ]);
 
-        if ($request->hasFile('cover')) {
-            $coverPath = $request->file('cover')->store('cover_buku', 'public');
-        }
+    // 🔥 HANDLE UPLOAD GAMBAR
+    $coverPath = null;
 
-        Buku::create([
-            'judul_buku' => $request->judul_buku,
-            'penulis' => $request->penulis,
-            'tahun_terbit' => $request->tahun_terbit,
-            'stok' => $request->stok,
-            'cover' => $coverPath,
-        ]);
-
-        return redirect()->route('buku.management')
-            ->with('success', 'Buku berhasil ditambahkan');
+    if ($request->hasFile('cover')) {
+        $coverPath = $request->file('cover')->store('cover_buku', 'public');
     }
 
-    // ================= EDIT =================
-    public function edit($id)
-    {
-        $buku = Buku::findOrFail($id);
-        return view('petugas.edit_buku', compact('buku'));
-    }
+    Buku::create([
+        'judul_buku' => $request->judul_buku,
+        'penulis' => $request->penulis,
+        'tahun_terbit' => $request->tahun_terbit,
+        'stok' => $request->stok,
+        'cover' => $coverPath,
+    ]);
+
+    return redirect()->route('buku.management')->with('success', 'Buku berhasil ditambahkan');
+}
 
     // ================= UPDATE =================
     public function update(Request $request, $id)
     {
-        $buku = Buku::findOrFail($id);
+    $request->validate([
+        'judul_buku' => 'required|unique:buku,judul_buku,' . $id . ',id_buku',
+        'penulis' => 'required',
+        'tahun_terbit' => 'nullable|numeric',
+    ], [
+        'judul_buku.unique' => 'Judul buku sudah ada!'
+    ]);
 
-        if ($request->hasFile('cover')) {
-            $coverPath = $request->file('cover')->store('cover_buku', 'public');
-            $buku->cover = $coverPath;
-        }
+    $buku = Buku::findOrFail($id);
+    $buku->update($request->all());
 
-        $buku->update([
-            'judul_buku' => $request->judul_buku,
-            'penulis' => $request->penulis,
-            'tahun_terbit' => $request->tahun_terbit,
-            'stok' => $request->stok,
-        ]);
-
-        return redirect()->route('buku.management')
-            ->with('success', 'Buku berhasil diupdate');
+      return redirect()->route('buku.management')->with('success', 'Buku berhasil diupdate');
     }
-
     // ================= DELETE =================
     public function destroy($id)
     {
@@ -131,5 +129,13 @@ class BukuController extends Controller
 {
     $buku = Buku::all();
     return view('kepala.buku', compact('buku'));
+}
+
+//------------------ EDIT BUKU ---------------
+public function edit($id)
+{
+    $buku = Buku::findOrFail($id);
+
+    return view('petugas.edit_buku', compact('buku'));
 }
 }
