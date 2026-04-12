@@ -12,7 +12,7 @@
         
         {{-- ICON --}}
         <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
-            🔍
+            
         </span>
 
         {{-- INPUT --}}

@@ -35,7 +35,7 @@ class PinjamController extends Controller
             'email' => Auth::user()->email,
             'telepon' => $request->telepon ?? '-',
             'tgl_pinjam' => Carbon::now(),
-            'tgl_kembali' => Carbon::now()->addDays(7),
+            'tgl_kembali' => Carbon::now()->addDays(3),
             'status' => 'menunggu'
         ]);
 

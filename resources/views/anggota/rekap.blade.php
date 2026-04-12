@@ -53,7 +53,7 @@
                         : '-' }}
                 </td>
 
-                {{-- ✅ DENDA (AMBIL DARI DB) --}}
+                {{-- ✅ DENDA --}}
                 <td class="p-3">
                     @if($item->denda > 0)
                         <span class="text-red-500 font-semibold">

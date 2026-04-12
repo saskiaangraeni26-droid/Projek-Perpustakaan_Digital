@@ -4,7 +4,7 @@
 
 <h1 class="text-2xl font-semibold mb-6">Data Buku</h1>
 
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
 
 @forelse($buku as $item)
 
@@ -25,13 +25,12 @@
 
     <!-- DATA -->
     <div class="flex-grow">
-        <h3 class="text-sm font-semibold mt-2 line-clamp-2 min-h-[40px]">
+        <h3 class="text-sm font-semibold mt-4 line-clamp-2 min-h-[40px]">
             {{ $item->judul_buku }}
         </h3>
-
-        <p class="text-gray-500 text-xs">
+        <h3 class="text-gray-500 text-xs">
             {{ $item->penulis }}
-        </p>
+        </h3>
     </div>
 
     <!-- BUTTON -->
@@ -80,7 +79,7 @@
             <!-- DETAIL -->
             <p class="text-sm text-gray-600">ID Buku: {{ $item->id_buku }}</p>
             <p class="text-sm text-gray-600">Penulis: {{ $item->penulis }}</p>
-            <p class="text-sm text-gray-600">Tahun: {{ $item->tahun_terbit }}</p>
+            <p class="text-sm text-gray-600">Tahun Terbit: {{ $item->tahun_terbit }}</p>
             <p class="text-sm text-gray-600">Stok: {{ $item->stok }}</p>
 
             <!-- TOMBOL -->
