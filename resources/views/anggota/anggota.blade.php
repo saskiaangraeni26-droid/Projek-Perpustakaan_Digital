@@ -3,6 +3,48 @@
 @section('content')
 
 <h1 class="text-2xl font-semibold mb-6">Data Buku</h1>
+@if(session('success'))
+    <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg text-sm">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm">
+        {{ session('error') }}
+    </div>
+@endif
+<form method="GET" class="mb-4 flex gap-2">
+    {{-- pencarian buat buku--}}
+    <input type="text"
+        name="search"
+        value="{{ request('search') }}"
+        placeholder="Cari judul buku..."
+        class="border rounded-lg px-3 py-2 w-30 text-sm">
+
+    {{-- buat pencarian kategori--}}
+    <select name="kategori" class="border rounded-lg px-3 py-2 text-sm">
+        <option value="">Semua Kategori</option>
+       @foreach($kategoriList as $k)
+            <option value="{{ $k->id }}"
+                {{ request('kategori') == $k->id ? 'selected' : '' }}>
+                {{ $k->nama_kategori }}
+            </option>
+        @endforeach
+    </select>
+
+    {{-- tombol buat cari buku--}}
+    <button class="bg-blue-500 text-white px-4 rounded-lg text-sm">
+        Cari
+    </button>
+
+    {{-- tombol buat riset kalo udh nyari --}} 
+    <a href="{{ url()->current() }}"
+       class="bg-gray-300 px-4 rounded-lg flex items-center text-sm">
+        Reset
+    </a>
+
+</form>
 
 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
 
@@ -31,6 +73,9 @@
         <h3 class="text-gray-500 text-xs">
             {{ $item->penulis }}
         </h3>
+        <p class="text-xs text-gray-400">
+            {{ $item->category->nama_kategori ?? '-' }}
+        </p>
     </div>
 
     <!-- BUTTON -->
@@ -80,7 +125,8 @@
             <p class="text-sm text-gray-600">ID Buku: {{ $item->id_buku }}</p>
             <p class="text-sm text-gray-600">Penulis: {{ $item->penulis }}</p>
             <p class="text-sm text-gray-600">Tahun Terbit: {{ $item->tahun_terbit }}</p>
-            <p class="text-sm text-gray-600">Stok: {{ $item->stok }}</p>
+            <p class="text-sm text-gray-600">Kategori: {{ $item->category->nama_kategori ?? '-' }}</p>
+             <p class="text-sm text-gray-600">Stok: {{ $item->stok }}</p>
 
             <!-- TOMBOL -->
             <button @click="open = false"

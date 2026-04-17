@@ -4,31 +4,52 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Buku;
+use App\Models\Category;
+
 
 class BukuController extends Controller
 {
     // ================= ANGGOTA =================
-    public function index(Request $request)
+  public function index(Request $request)
 {
     $search = $request->search;
+    $kategori = $request->kategori;
 
-    $buku = Buku::when($search, function ($query, $search) {
-        return $query->where('judul_buku', 'like', "%{$search}%")
-                     ->orWhere('penulis', 'like', "%{$search}%")
-                     ->orWhere('tahun_terbit', 'like', "%{$search}%");
-    })->get();
+    $buku = Buku::with('category')
 
-    return view('anggota.anggota', compact('buku'));
+        // SEARCH
+        ->when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('judul_buku', 'like', "%{$search}%")
+                  ->orWhere('penulis', 'like', "%{$search}%")
+                  ->orWhere('tahun_terbit', 'like', "%{$search}%");
+            });
+        })
+
+        // FILTER KATEGORI
+        ->when($kategori, function ($query, $kategori) {
+            $query->where('category_id', $kategori);
+        })
+
+        ->get();
+
+
+
+    $kategoriList = Category::all();
+
+    return view('anggota.anggota', compact('buku', 'kategoriList'));
 }
 
     // ================= CREATE =================
+
     public function create()
     {
-        return view('petugas.tambah_buku');
+    $categories = Category::all();
+    return view('petugas.tambah_buku', compact('categories'));
     }
 
     // ================= STORE =================
-    public function store(Request $request)
+public function store(Request $request)
 {
     $request->validate([
         'judul_buku' => 'required|unique:buku,judul_buku',
@@ -36,11 +57,8 @@ class BukuController extends Controller
         'tahun_terbit' => 'nullable|numeric',
         'stok' => 'required|numeric|min:0',
         'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
-    ], [
-        'judul_buku.unique' => 'Judul buku sudah ada, tidak boleh sama!'
     ]);
 
-    // 🔥 HANDLE UPLOAD GAMBAR
     $coverPath = null;
 
     if ($request->hasFile('cover')) {
@@ -53,41 +71,76 @@ class BukuController extends Controller
         'tahun_terbit' => $request->tahun_terbit,
         'stok' => $request->stok,
         'cover' => $coverPath,
+        'category_id' => $request->category_id,
     ]);
 
     return redirect()->route('buku.management')->with('success', 'Buku berhasil ditambahkan');
 }
-
     // ================= UPDATE =================
- public function update(Request $request, $id)
-{
+    public function update(Request $request, $id)
+    {
     $request->validate([
         'judul_buku' => 'required|unique:buku,judul_buku,' . $id . ',id_buku',
         'penulis' => 'required',
         'tahun_terbit' => 'nullable|numeric',
+        'stok' => 'required|numeric|min:0', 
     ], [
-        'judul_buku.unique' => 'Judul buku sudah ada!'
+        'judul_buku.unique' => 'Judul buku sudah ada!',
+        'stok.min' => 'Stok tidak boleh minus!'
     ]);
 
     $buku = Buku::findOrFail($id);
-    $buku->update($request->all());
 
-    return redirect()->route('buku.management')->with('success', 'Buku berhasil diupdate');
-}
+    $buku->update([
+    'judul_buku' => $request->judul_buku,
+    'penulis' => $request->penulis,
+    'tahun_terbit' => $request->tahun_terbit,
+    'stok' => $request->stok,
+    'category_id' => $request->category_id, 
+    ]);
+
+    return redirect()->route('buku.management')
+        ->with('success', 'Buku berhasil diupdate');
+    }
     // ================= DELETE =================
     public function destroy($id)
     {
-        Buku::findOrFail($id)->delete();
+    $buku = Buku::findOrFail($id);
 
-        return redirect()->route('buku.management')
-            ->with('success', 'Buku berhasil dihapus');
+    $dipinjam = \App\Models\Peminjaman::where('buku_id', $id)
+        ->where('status', 'dipinjam')
+        ->exists();
+
+    if ($dipinjam) {
+        return back()->with('error', 'Buku tidak bisa dihapus karena masih dipinjam!');
+    }
+
+    $buku->delete();
+
+    return back()->with('success', 'Buku berhasil dihapus');
     }
 
     // ================= MANAGEMENT =================
-    public function management()
+   public function management(Request $request)
     {
-        $buku = Buku::all();
-        return view('petugas.buku', compact('buku'));
+    $search = $request->search;
+
+    $buku = Buku::with('category')
+
+        ->when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('judul_buku', 'like', "%{$search}%")
+                  ->orWhere('penulis', 'like', "%{$search}%")
+                  ->orWhere('tahun_terbit', 'like', "%{$search}%")
+                  ->orWhereHas('category', function ($q2) use ($search) {
+                      $q2->where('nama_kategori', 'like', "%{$search}%");
+                  });
+            });
+        })
+
+        ->get();
+
+    return view('petugas.buku', compact('buku'));
     }
 
     // ================= TAMBAH STOK =================
@@ -138,4 +191,7 @@ public function edit($id)
 
     return view('petugas.edit_buku', compact('buku'));
 }
+
+
+
 }

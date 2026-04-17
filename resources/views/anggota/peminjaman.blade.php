@@ -38,25 +38,42 @@
                     {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y') }}
                 </td>
 
-                <td> @if($item->status == 'menunggu')
-                <span class="bg-blue-400 text-white px-2 py-1 rounded text-xs">
-                    Menunggu
-                </span>
-            @elseif($item->status == 'dipinjam')
-                <span class="bg-yellow-400 text-white px-2 py-1 rounded text-xs">
-                    Dipinjam
-                </span>
-            @elseif($item->status == 'menunggu_konfirmasi')
-                <span class="bg-purple-400 text-white px-2 py-1 rounded text-xs">
-                    Menunggu Konfirmasi
-                </span>
-            @else
-                <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">
-                    Selesai
-                </span>
-            @endif
-        </td>
+                <td>
+                        @php $status = trim(strtolower($item->status)); @endphp
 
+                        @if($status == 'menunggu')
+                            <span class="bg-blue-400 text-white px-2 py-1 rounded text-xs">
+                                Menunggu
+                            </span>
+
+                        @elseif($status == 'dipinjam')
+                            <span class="bg-yellow-400 text-white px-2 py-1 rounded text-xs">
+                                Dipinjam
+                            </span>
+
+                        @elseif($status == 'menunggu_konfirmasi')
+                            <span class="bg-purple-400 text-white px-2 py-1 rounded text-xs">
+                                Menunggu Konfirmasi
+                            </span>
+
+                        @elseif($status == 'ditolak')
+                            <div class="flex flex-col items-center gap-1">
+                                <span class="bg-red-500 text-white px-2 py-1 rounded text-xs">
+                                    Ditolak
+                                </span>
+
+                                {{-- 🔥 NOTIF ALASAN --}}
+                                <span class="text-red-500 text-xs italic">
+                                    {{ $item->keterangan ?? 'Tidak ada keterangan' }}
+                                </span>
+                            </div>
+
+                        @elseif($status == 'dikembalikan')
+                            <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">
+                                Selesai
+                            </span>
+                        @endif
+                </td>
             </tr>
         @empty
             <tr>

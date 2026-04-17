@@ -25,7 +25,7 @@
                     <th class="p-2">No</th>
                     <th class="p-2">Nama</th>
                     <th class="p-2">Email</th>
-                    <th class="p-2">Role</th>
+                    <th class="p-2">No HP</th> <!-- ✅ GANTI -->
                 </tr>
             </thead>
 
@@ -37,7 +37,9 @@
                     </td>
                     <td class="p-2">{{ $item->name }}</td>
                     <td class="p-2">{{ $item->email }}</td>
-                    <td class="p-2">{{ $item->role }}</td>
+                    <td class="p-2">
+                        {{ $item->no_hp ?? '-' }} <!-- ✅ GANTI -->
+                    </td>
                 </tr>
                 @empty
                 <tr>

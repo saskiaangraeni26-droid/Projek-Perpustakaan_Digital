@@ -27,7 +27,7 @@ class LaporanController extends Controller
 
     public function exportPdf(Request $request)
     {
-        set_time_limit(120); // 🔥 biar gak timeout
+        set_time_limit(120); //  biar gak timeout
 
         $query = Peminjaman::whereNotNull('tgl_dikembalikan')->with('buku');
 
@@ -38,7 +38,7 @@ class LaporanController extends Controller
             ]);
         }
 
-        // 🔥 BATASI DATA + HITUNG DI CONTROLLER
+        // BATASI DATA + HITUNG DI CONTROLLER
         $data = $query->limit(50)->get()->map(function ($item) {
             $tglPinjam = Carbon::parse($item->tgl_pinjam);
             $jatuhTempo = Carbon::parse($item->tgl_kembali);

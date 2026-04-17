@@ -64,7 +64,7 @@
 
                     @else
                         <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs">
-                            Selesai
+                            Dikembalikan
                         </span>
                     @endif
                 </td>

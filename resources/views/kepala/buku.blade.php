@@ -12,6 +12,7 @@
                 <th class="p-2">Cover</th>
                 <th class="p-2">Judul Buku</th>
                 <th class="p-2">Penulis</th>
+                <th class="p-2">Kategori</th>
                 <th class="p-2">Status</th>
                 <th class="p-2">Stok</th>
             </tr>
@@ -31,6 +32,9 @@
 
                 <td class="p-2">{{ $item->judul_buku }}</td>
                 <td class="p-2">{{ $item->penulis }}</td>
+                <td class="p-2">
+                    {{ $item->category->nama_kategori ?? '-' }}
+                </td>
 
                 <td class="p-2">
                     @if($item->stok > 0)

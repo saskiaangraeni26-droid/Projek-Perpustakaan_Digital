@@ -46,7 +46,7 @@
                     <th class="p-3">No</th>
                     <th class="p-3">Nama</th>
                     <th class="p-3">Email</th>
-                    <th class="p-3">Status</th>
+                    <th class="p-3">No HP</th> {{-- ✅ ganti --}}
                     <th class="p-3">Aksi</th>
                 </tr>
             </thead>
@@ -64,29 +64,15 @@
                         {{ $item->email }}
                     </td>
 
-                    <td class="p-3">
-                        <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
-                            Aktif
-                        </span>
+                    <td class="p-3 text-gray-600">
+                        {{ $item->no_hp ?? '-' }} {{-- ✅ tampil no hp --}}
                     </td>
 
-                    <td class="p-3 flex justify-center gap-2">
-
-                        <a href="{{ route('anggota.edit', $item->id) }}"
-                           class="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 text-xs">
-                           Edit
+                    <td class="p-3 text-center">
+                        <a href="{{ route('anggota.show', $item->id) }}"
+                           class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-xs">
+                           Detail
                         </a>
-
-                        <form action="{{ route('anggota.destroy', $item->id) }}" method="POST"
-                              onsubmit="return confirm('Yakin mau hapus?')">
-                            @csrf
-                            @method('DELETE')
-
-                            <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs">
-                                Hapus
-                            </button>
-                        </form>
-
                     </td>
                 </tr>
 

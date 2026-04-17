@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Alpine -->
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         [x-cloak] { display: none !important; }
@@ -24,7 +24,7 @@
 
         <!-- Logo -->
         <img 
-            src="{{ asset('storage/sidebar/foto.png') }}" 
+            src="{{ asset('storage/smk/smk.png') }}" 
             class="h-20 mx-auto object-contain mb-4"
         >
 
@@ -54,7 +54,7 @@
                 <li><a href="{{ route('buku.management') }}" class="block p-2 rounded hover:bg-[#a85a5a] transition">Data Buku</a></li>
                 <li><a href="{{ route('data_anggota.petugas') }}" class="block p-2 rounded hover:bg-[#a85a5a] transition">Data Anggota</a></li>
                 <li><a href="{{ route('petugas.peminjaman') }}" class="block p-2 rounded hover:bg-[#a85a5a] transition">Data Peminjaman</a></li>
-                <li><a href="{{ route('petugas.konfirmasi') }}" class="block p-2 rounded hover:bg-[#a85a5a] transition">Data Pengembalian</a></li>
+                <li><a href="{{route('petugas.pengembalian')}}" class="block p-2 rounded hover:bg-[#a85a5a] transition">Data Pengembalian</a></li>
 
             @elseif($role === 'kepala')
                 <li><a href="/dashboard" class="block p-2 rounded hover:bg-[#a85a5a] transition">Dashboard</a></li>
@@ -68,7 +68,6 @@
                 <li><a href="/dashboard" class="block p-2 rounded hover:bg-[#a85a5a] transition">Dashboard</a></li>
                 <li><a href="{{ route('buku.index') }}" class="block p-2 rounded hover:bg-[#a85a5a] transition">Daftar Buku</a></li>
                 <li><a href="{{ route('peminjaman.aktif') }}" class="block p-2 rounded hover:bg-[#a85a5a] transition">Peminjaman</a></li>
-                <li><a href="{{ route('pengembalian.buku') }}" class="block p-2 rounded hover:bg-[#a85a5a] transition">Pengembalian</a></li>
                 <li><a href="{{ route('peminjaman.riwayat') }}" class="block p-2 rounded hover:bg-[#a85a5a] transition">Riwayat</a></li>
             @endif
 

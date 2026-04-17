@@ -24,6 +24,17 @@
         <input type="number" name="tahun_terbit" placeholder="Tahun Terbit"
             class="border p-2 w-full mb-2 rounded" required>
 
+        {{-- KATEGORI --}}
+        <select name="category_id" class="border p-2 w-full mb-2 rounded">
+            <option value="">Pilih Kategori</option>
+
+            @foreach($categories as $cat)
+                <option value="{{ $cat->id }}">
+                    {{ $cat->nama_kategori }}
+                </option>
+            @endforeach
+        </select>
+
         {{-- Cover --}}
         <input type="file" name="cover" id="coverInput"
             class="border p-2 w-full mb-2 rounded" accept="image/*">

@@ -16,19 +16,21 @@ class ProfileController extends Controller
 
     // update profile
     public function update(Request $request)
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-        ]);
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email',
+        'no_hp' => 'nullable'
+    ]);
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
+    $user->update([
+        'name' => $request->name,
+        'email' => $request->email,
+        'no_hp' => $request->no_hp,
+    ]);
 
-        return redirect('/dashboard')->with('success', 'Berhasil update');
-    }
+    return redirect('/dashboard')->with('success', 'Berhasil update');
+}
 }

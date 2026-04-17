@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Buku; // 🔥 WAJIB
 use Carbon\Carbon;
 
 class Peminjaman extends Model
@@ -14,50 +15,27 @@ class Peminjaman extends Model
 
     protected $fillable = [
         'buku_id',
+        'judul_buku', // 🔥 backup
+        'penulis',
         'user_id',
         'nama',
         'email',
         'telepon',
         'tgl_pinjam',
-        'tgl_kembali',        // jatuh tempo
-        'tgl_dikembalikan',   // input dari anggota
+        'tgl_kembali',
+        'tgl_dikembalikan',
         'status',
         'denda'
     ];
 
-    // 🔥 RELASI KE BUKU
+    // 🔥 RELASI KE BUKU (SUPPORT SOFT DELETE)
     public function buku()
-    {
-        return $this->belongsTo(Buku::class, 'buku_id', 'id_buku');
-    }
-
+{
+    return $this->belongsTo(Buku::class, 'buku_id', 'id_buku')->withTrashed();
+}
     // 🔥 RELASI KE USER
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id');
-    }
-
-    // 🔥 HITUNG DENDA (VERSI BENAR)
-    public function hitungDenda()
-    {
-        // kalau belum ada tanggal dikembalikan → no denda
-        if (!$this->tgl_dikembalikan || !$this->tgl_kembali) {
-            $this->denda = 0;
-            return 0;
-        }
-
-        $jatuhTempo = Carbon::parse($this->tgl_kembali);
-        $dikembalikan = Carbon::parse($this->tgl_dikembalikan);
-
-        // hitung selisih hari (kalau negatif = tidak telat)
-        $terlambat = $jatuhTempo->diffInDays($dikembalikan, false);
-
-        if ($terlambat > 0) {
-            $this->denda = $terlambat * 1000; // 1000 per hari
-        } else {
-            $this->denda = 0;
-        }
-
-        return $this->denda;
     }
 }

@@ -6,13 +6,44 @@
 
 <div class="bg-white p-4 rounded-xl shadow">
 
-    {{-- Tombol Tambah Buku --}}
-    <div class="flex justify-end mb-4">
-        <a href="{{ route('buku.create') }}"
-           class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-           + Tambah Buku
-        </a>
+    <div class="flex justify-between items-center mb-4">
+
+    <!-- SEARCH -->
+    <form method="GET" class="flex gap-2">
+        <input 
+            type="text" 
+            name="search"
+            placeholder="Cari judul / penulis..."
+            value="{{ request('search') }}"
+            class="border px-3 py-2 rounded w-64"
+        >
+        <button class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+            Cari
+        </button>
+    </form>
+
+    <!-- Tombol Tambah -->
+    <a href="{{ route('buku.create') }}"
+       class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+       + Tambah Buku
+    </a>
+
+</div>
+    
+
+    {{-- ✅ NOTIF ERROR --}}
+    @if(session('error'))
+    <div class="bg-red-200 text-red-800 p-3 rounded mb-4">
+    {{ session('error') }}
     </div>
+    @endif
+
+    {{-- ✅ NOTIF SUCCESS --}}
+    @if(session('success'))
+    <div class="bg-green-200 text-green-800 p-3 rounded mb-4">
+        {{ session('success') }}
+    </div>
+    @endif
 
     {{-- Table --}}
     <table class="w-full text-sm text-left border">
@@ -21,6 +52,7 @@
                 <th class="p-2">Cover</th>
                 <th class="p-2">Judul Buku</th>
                 <th class="p-2">Penulis</th>
+                <th class="p-2">Kategori</th>
                 <th class="p-2">Tahun Terbit</th> 
                 <th class="p-2">Status</th>
                 <th class="p-2">Stok</th>
@@ -44,6 +76,9 @@
                 {{-- DATA --}}
                 <td class="p-2">{{ $item->judul_buku }}</td>
                 <td class="p-2">{{ $item->penulis }}</td>
+                <td class="p-2">
+                    {{ $item->category->nama_kategori ?? '-' }}
+                </td>
 
                 {{-- 🔥 TAHUN TERBIT --}}
                 <td class="p-2">
@@ -98,6 +133,7 @@
                 </td>
             </tr>
             @endforelse
+            
         </tbody>
     </table>
 

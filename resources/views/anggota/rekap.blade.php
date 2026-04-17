@@ -2,7 +2,7 @@
 
 @section('content')
 
-<h1 class="text-2xl font-semibold mb-6">Rekap Data Peminjaman</h1>
+<h1 class="text-2xl font-semibold mb-6">Riwayat Peminjaman</h1>
 
 <div class="bg-white p-6 rounded-2xl shadow-md">
 
@@ -70,15 +70,23 @@
                         <span class="bg-yellow-400 text-white px-3 py-1 rounded-full text-xs">
                             Dipinjam
                         </span>
+
                     @elseif($item->status == 'menunggu')
                         <span class="bg-blue-400 text-white px-3 py-1 rounded-full text-xs">
                             Menunggu
                         </span>
+
                     @elseif($item->status == 'menunggu_konfirmasi')
                         <span class="bg-purple-400 text-white px-3 py-1 rounded-full text-xs">
                             Menunggu Konfirmasi
                         </span>
-                    @else
+
+                    @elseif($item->status == 'ditolak') {{-- 🔥 TAMBAH INI --}}
+                        <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">
+                            Ditolak
+                        </span>
+
+                    @elseif($item->status == 'dikembalikan')
                         <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs">
                             Selesai
                         </span>

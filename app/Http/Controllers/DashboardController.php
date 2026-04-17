@@ -27,7 +27,7 @@ class DashboardController extends Controller
             ->whereDate('tgl_kembali', '<', now())
             ->count();
 
-        // 🔥 TAMBAH DI SINI
+        
         $denda = Peminjaman::where('user_id', $user->id)
             ->sum('denda');
 

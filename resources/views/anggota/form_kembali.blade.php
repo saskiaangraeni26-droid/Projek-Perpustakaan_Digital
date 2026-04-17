@@ -36,10 +36,11 @@
             </label>
 
             <input 
-                type="date" 
-                name="tgl_dikembalikan" 
-                class="border p-2 w-full rounded mb-3 focus:outline-none focus:ring-2 focus:ring-green-400" 
-                required>
+            type="date" 
+            name="tgl_dikembalikan" 
+            value="{{ date('Y-m-d') }}"
+            readonly
+            class="border p-2 w-full rounded mb-3 bg-gray-100 cursor-not-allowed">
 
             {{-- INFO --}}
             <p class="text-xs text-gray-500 mb-3">

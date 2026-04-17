@@ -78,15 +78,25 @@
 
                         <!-- STATUS -->
                         <td class="border p-2">
-                            @if($item->tgl_dikembalikan)
-                                <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">
-                                    Dikembalikan
+
+                            @php $status = trim(strtolower($item->status)); @endphp
+
+                            @if($status == 'dikembalikan')
+                                <span class="bg-green-500 text-white px-3 py-1 rounded">
+                                    Selesai
                                 </span>
+
+                            @elseif($status == 'ditolak')
+                                <span class="bg-red-500 text-white px-3 py-1 rounded">
+                                    Ditolak
+                                </span>
+
                             @else
-                                <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs">
-                                    Dipinjam
+                                <span class="bg-gray-400 text-white px-3 py-1 rounded">
+                                    {{ $item->status }}
                                 </span>
                             @endif
+
                         </td>
                     </tr>
 

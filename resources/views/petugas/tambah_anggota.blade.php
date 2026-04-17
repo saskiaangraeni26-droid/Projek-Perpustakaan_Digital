@@ -18,18 +18,15 @@
         <div class="mb-3">
             <label class="block">Email</label>
             <input type="email" name="email" class="border p-2 w-full" required>
+            @error('email')
+                <div class="text-red-500 text-sm">{{ $message }}</div>
+            @enderror
         </div>
-        @error('email')
-    <div class="text-red-500 text-sm">{{ $message }}</div>
-    @enderror
 
-        <!-- Status -->
+        <!-- No HP -->
         <div class="mb-3">
-            <label class="block">Status</label>
-            <select name="status" class="border p-2 w-full">
-                <option value="1">Aktif</option>
-                <option value="0">Tidak Aktif</option>
-            </select>
+            <label class="block">No HP</label>
+            <input type="text" name="no_hp" class="border p-2 w-full" placeholder="08xxxxxxxxxx">
         </div>
 
         <!-- Tombol -->

@@ -44,23 +44,23 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat', [PinjamController::class, 'riwayat'])
         ->name('peminjaman.riwayat');
 
-    // 🔹 Halaman pengembalian
-    Route::get('/pengembalian', [PinjamController::class, 'pengembalian'])
-        ->name('pengembalian.buku');
+    // // 🔹 Halaman pengembalian
+    // Route::get('/pengembalian', [PinjamController::class, 'pengembalian'])
+    //     ->name('pengembalian.buku');
 
     // 🔹 Form isi tanggal pengembalian
-    Route::get('/anggota/kembali/{id}', [PinjamController::class, 'formKembaliAnggota'])
-        ->name('anggota.form_kembali');
+    // Route::get('/anggota/kembali/{id}', [PinjamController::class, 'formKembaliAnggota'])
+    //     ->name('anggota.form_kembali');
 
-    // 🔹 Ajukan pengembalian
-    Route::put('/pengembalian/{id}', [PinjamController::class, 'update'])
-        ->name('pengembalian.update');
+    // // 🔹 Ajukan pengembalian
+    // Route::put('/pengembalian/{id}', [PinjamController::class, 'update'])
+    //     ->name('pengembalian.update');
 
     Route::get('/peminjaman', [PinjamController::class, 'peminjamanAktif'])
     ->name('peminjaman.aktif');
 
-    Route::get('/preview-kembali/{id}', [PinjamController::class, 'previewKembali'])
-    ->name('anggota.preview_kembali');
+    // Route::get('/preview-kembali/{id}', [PinjamController::class, 'previewKembali'])
+    // ->name('anggota.preview_kembali');
 
 
     // ================== PETUGAS ==================
@@ -69,18 +69,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/petugas/peminjaman', [PinjamController::class, 'index'])
         ->name('petugas.peminjaman');
 
-    // 🔹 Setujui pinjam
     Route::put('/petugas/peminjaman/{id}/setujui', [PinjamController::class, 'setujui'])
     ->name('petugas.setujui');
 
     // 🔹 Konfirmasi pengembalian + denda
-    Route::get('/petugas/konfirmasi', [PinjamController::class, 'konfirmasiPengembalian'])
-        ->name('petugas.konfirmasi');
+    //    Route::put('/petugas/konfirmasi-kembali/{id}', [PinjamController::class, 'konfirmasiPengembalian'])
+//     ->name('petugas.konfirmasi.kembali');;
 
-    Route::put('/petugas/konfirmasi/{id}', [PinjamController::class, 'konfirmasiKembali'])
-        ->name('petugas.konfirmasi.kembali');
+    Route::get('/petugas/pengembalian', [PinjamController::class, 'pengembalianPetugas'])
+    ->name('petugas.pengembalian');
 
-    
+    Route::post('/petugas/tolak/{id}', [PinjamController::class, 'tolak'])
+    ->name('petugas.tolak');
+
+    Route::put('/petugas/kembali/{id}', [PinjamController::class, 'prosesKembali'])
+    ->name('petugas.proses.kembali');
 
     // ================== DATA ANGGOTA ==================
     Route::get('/data-anggota', [AnggotaController::class, 'index'])->name('data_anggota.petugas');

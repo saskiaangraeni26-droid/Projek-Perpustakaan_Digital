@@ -8,30 +8,30 @@
 
     {{-- 🔍 SEARCH --}}
     <form method="GET" class="w-full md:w-1/2">
-    <div class="relative">
-        
-        {{-- ICON --}}
-        <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+        <div class="relative">
             
-        </span>
+            {{-- ICON --}}
+            <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+                🔍
+            </span>
 
-        {{-- INPUT --}}
-        <input 
-            type="text" 
-            name="search" 
-            value="{{ $search ?? '' }}" 
-            placeholder="Cari nama atau email..."
-            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl shadow-sm 
-                   focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 
-                   transition"
-        >
-    </div>
-</form>
+            {{-- INPUT --}}
+            <input 
+                type="text" 
+                name="search" 
+                value="{{ $search ?? '' }}" 
+                placeholder="Cari nama atau email..."
+                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl shadow-sm 
+                       focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 
+                       transition"
+            >
+        </div>
+    </form>
 
     {{-- ➕ TAMBAH --}}
     <div class="text-right">
         <a href="{{ route('kepala.tambahpetugas') }}"
-           class="bg-green-500 text-white px-5 py-3 rounded-lg shadow hover:bg-green-600 transition whitespace-nowrap">
+           class="bg-green-500 text-white px-5 py-3 rounded-xl shadow hover:bg-green-600 transition whitespace-nowrap">
            + Tambah Petugas
         </a>
     </div>
@@ -56,13 +56,14 @@
 
 {{-- 📊 TABLE --}}
 <div class="overflow-x-auto">
-<table class="w-full border border-gray-200 rounded-lg overflow-hidden">
+<table class="w-full border border-gray-200 rounded-xl overflow-hidden">
 
     <thead class="bg-gray-100 text-gray-700">
         <tr>
             <th class="p-3">No</th>
             <th class="p-3 text-left">Nama</th>
             <th class="p-3 text-left">Email</th>
+            <th class="p-3 text-left">No HP</th>
             <th class="p-3">Aksi</th>
         </tr>
     </thead>
@@ -71,23 +72,43 @@
     @forelse($petugas as $p)
     <tr class="text-center border-t hover:bg-gray-50 transition">
         <td class="p-3">{{ $loop->iteration }}</td>
-        <td class="p-3 text-left font-medium">{{ $p->name }}</td>
-        <td class="p-3 text-left text-gray-600">{{ $p->email }}</td>
 
-        <td class="p-3">
+        <td class="p-3 text-left font-semibold text-gray-800">
+            {{ $p->name }}
+        </td>
+
+        <td class="p-3 text-left text-gray-600">
+            {{ $p->email }}
+        </td>
+
+        <td class="p-3 text-left">
+            @if($p->no_hp)
+                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-lg text-sm">
+                    {{ $p->no_hp }}
+                </span>
+            @else
+                <span class="text-gray-400 italic text-sm">Kosong</span>
+            @endif
+        </td>
+
+        <td class="p-3 flex justify-center gap-2">
+
+            {{-- HAPUS --}}
             <form action="{{ route('petugas.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Yakin mau hapus?')">
                 @csrf
                 @method('DELETE')
 
-                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition">
-                    Hapus
+                <button type="submit" 
+                    class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition">
+                    🗑 Hapus
                 </button>
             </form>
+
         </td>
     </tr>
     @empty
     <tr>
-        <td colspan="4" class="p-4 text-gray-500 text-center">
+        <td colspan="5" class="p-4 text-gray-500 text-center">
             Data petugas belum ada 😢
         </td>
     </tr>

@@ -28,23 +28,25 @@ class PetugasController extends Controller
     }
 
     public function store(Request $request)
-    {
+{
     $request->validate([
         'name' => 'required',
         'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:5'
+        'password' => 'required|min:5',
+        'no_hp' => 'nullable|digits_between:10,15'
     ]);
 
     User::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
+        'no_hp' => $request->no_hp,
         'role' => 'petugas'
     ]);
 
     return redirect()->route('kepala.petugas')
         ->with('success', 'Petugas berhasil ditambahkan');
-    }
+}
 
     public function destroy($id)
     {

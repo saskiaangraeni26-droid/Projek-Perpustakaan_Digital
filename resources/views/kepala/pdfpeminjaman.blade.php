@@ -49,12 +49,25 @@
             <td>{{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d-m-Y') }}</td>
             <td>{{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d-m-Y') }}</td>
             <td>
-                @if($item->status == 'menunggu')
+                @php $status = trim(strtolower($item->status)); @endphp
+
+                @if($status == 'menunggu')
                     Menunggu
-                @elseif($item->status == 'dipinjam')
+
+                @elseif($status == 'dipinjam')
                     Dipinjam
-                @else
+
+                @elseif($status == 'menunggu_konfirmasi')
+                    Menunggu Konfirmasi
+
+                @elseif($status == 'ditolak')
+                    Ditolak
+
+                @elseif($status == 'dikembalikan')
                     Selesai
+
+                @else
+                    {{ $item->status }}
                 @endif
             </td>
         </tr>
