@@ -136,16 +136,16 @@
                 {{-- ================= DITOLAK ================= --}}
                 @elseif($item->status == 'ditolak')
                     <div class="flex flex-col items-center gap-1">
-                        <!-- <span class="px-3 py-1 bg-red-500 text-white rounded-full text-xs">
+                        <span class="px-3 py-1 bg-red-500 text-white rounded-full text-xs">
                             Ditolak
-                        </span> -->
+                        </span>
 
-                        <!-- @if($item->alasan)
+                      @if($item->alasan)
                         <span class="text-xs text-gray-500 italic">
                             "{{ $item->alasan }}"
                         </span>
                         @endif
-                    </div> -->
+                    </div> 
 
                 {{-- ================= SELESAI ================= --}}
                 @elseif($item->status == 'selesai' || $item->status == 'dikembalikan')

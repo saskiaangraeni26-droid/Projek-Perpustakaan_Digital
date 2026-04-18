@@ -203,27 +203,38 @@ class PinjamController extends Controller
 
     //     return back()->with('success', 'Dikonfirmasi');
     // }
+public function prosesKembali($id)
+{
+    $pinjam = Peminjaman::findOrFail($id);
 
-    public function prosesKembali($id)
-    {
-        $pinjam = Peminjaman::findOrFail($id);
-
-        if ($pinjam->status == 'ditolak') {
-            return back()->with('error', 'Data ditolak!');
-        }
-
-        if ($pinjam->status != 'dipinjam') {
-            return back()->with('error', 'Tidak valid');
-        }
-
-        $pinjam->status = 'dikembalikan';
-        $pinjam->tgl_dikembalikan = Carbon::now();
-        $pinjam->save();
-
-        $pinjam->buku->increment('stok');
-
-        return back()->with('success', 'Berhasil dikembalikan');
+    if ($pinjam->status == 'ditolak') {
+        return back()->with('error', 'Data ditolak!');
     }
+
+    if ($pinjam->status != 'dipinjam') {
+        return back()->with('error', 'Tidak valid');
+    }
+
+    $tglKembali = Carbon::parse($pinjam->tgl_kembali);
+    $tglDikembalikan = Carbon::now();
+
+    // hitung keterlambatan
+    $terlambat = $tglDikembalikan->gt($tglKembali)
+        ? $tglKembali->diffInDays($tglDikembalikan)
+        : 0;
+
+    $denda = $terlambat * 5000;
+
+    $pinjam->update([
+        'status' => 'dikembalikan',
+        'tgl_dikembalikan' => $tglDikembalikan,
+        'denda' => $denda // 🔥 simpan ke DB
+    ]);
+
+    $pinjam->buku->increment('stok');
+
+    return back()->with('success', 'Berhasil dikembalikan');
+}
 
     public function tolak($id)
     {

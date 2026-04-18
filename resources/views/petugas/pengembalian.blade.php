@@ -70,9 +70,9 @@
 
                 {{-- DENDA --}}
                 <td>
-                    @if($denda > 0)
+                    @if($item->denda > 0)
                         <span class="text-red-500 font-semibold">
-                            Rp {{ number_format($denda, 0, ',', '.') }}
+                           Rp {{ number_format($item->denda, 0, ',', '.') }}
                         </span>
                     @else
                         <span class="text-green-500">0</span>
